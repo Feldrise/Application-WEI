@@ -1,6 +1,7 @@
 import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:appli_wei/Pages/Home/DefisCaptainColunm.dart';
 import 'package:appli_wei/Pages/Home/DefisPlayerColumn.dart';
+import 'package:appli_wei/Pages/Home/TeamDefisAdminColumn.dart';
 import 'package:appli_wei/Pages/Home/TeamDefisPlayerColumn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +82,9 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
                 ? DefisCaptainColumn()
                 : DefisPlayerColumn(),
 
-                TeamDefisPlayerColumn()
+                (applicationSettings.loggedUser.role == "admin")
+                ? TeamDefisAdminColumn()
+                : TeamDefisPlayerColumn(),
               ],
             )
           ),

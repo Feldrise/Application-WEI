@@ -5,11 +5,14 @@ class WeiCard extends StatelessWidget {
     Key key, 
     this.margin = const EdgeInsets.all(8.0),
     this.padding = const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+    this.constraints,
     @required this.child
   }) : super(key: key);
 
   final EdgeInsetsGeometry margin;
   final EdgeInsetsGeometry padding;
+
+  final BoxConstraints constraints;
 
   final Widget child;
   
@@ -17,6 +20,7 @@ class WeiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: padding,
+      constraints: constraints,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(3),
         color: Theme.of(context).cardColor,

@@ -8,12 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DefisCaptainColumn extends StatelessWidget {
-  final bool isAdmin;
-
-  const DefisCaptainColumn({Key key, this.isAdmin = false}) : super(key: key);
-  
   @override
   Widget build(BuildContext context) {
+    bool isAdmin = Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role == "admin";
+
     return SingleChildScrollView(
       child: Consumer<ApplicationSettings>(
         builder: (context, applicationSetting, child) {
@@ -27,9 +25,9 @@ class DefisCaptainColumn extends StatelessWidget {
 
               // We browse users
               for (DocumentSnapshot userSnapshot in snapshot.data.documents) {
-                if (userSnapshot.data['team_id'] != applicationSetting.loggedUser.teamId && !isAdmin) 
+                if (!isAdmin && userSnapshot.data['team_id'] != applicationSetting.loggedUser.teamId)
                   continue;
-                
+
                 // We check user 
                 User userForDefis = User.fromSnapshot(userSnapshot);
 

@@ -16,6 +16,7 @@ class DefiCard extends StatelessWidget {
     return WeiCard(
       margin: EdgeInsets.symmetric(vertical: 32, horizontal: 8),
       padding: EdgeInsets.all(0),
+      constraints: BoxConstraints(maxWidth: 174),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
