@@ -1,15 +1,18 @@
 import 'package:appli_wei/Models/Activity.dart';
 import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Pages/Home/DefiDetailPage.dart';
+import 'package:appli_wei/Pages/Profil/EditDefi.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:flutter/material.dart';
 
 class DefiCard extends StatelessWidget {
-  const DefiCard({Key key, @required this.defi, this.userForDefis}) : super(key: key);
+  const DefiCard({Key key, @required this.defi, this.userForDefis, this.isManaged = false}) : super(key: key);
 
   final Activity defi;
 
   final User userForDefis;
+
+  final bool isManaged;
   
   @override
   Widget build(BuildContext context) {
@@ -52,16 +55,32 @@ class DefiCard extends StatelessWidget {
                   margin: EdgeInsets.symmetric(vertical: 8),
                   child: Text(defi.description,),
                 ),
-                FlatButton(
-                  child: Text("Détails", style: TextStyle(color: Theme.of(context).accentColor),),
-                  onPressed: () async {
-                    print("Défis détails required");
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DefiDetailPage(defi: defi, userForDefi: userForDefis,)),
-                    );
-                  },
+                Visibility(
+                  visible: !isManaged,
+                  child: FlatButton(
+                    child: Text("Détails", style: TextStyle(color: Theme.of(context).accentColor),),
+                    onPressed: () async {
+                      print("Défis détails required");
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DefiDetailPage(defi: defi, userForDefi: userForDefis,)),
+                      );
+                    },
+                  )
                 ),
+                Visibility(
+                  visible: isManaged,
+                  child: FlatButton(
+                    child: Text("Modifier", style: TextStyle(color: Theme.of(context).accentColor),),
+                    onPressed: () async {
+                      print("Défis détails required");
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EditDefi(defi: defi,)),
+                      );
+                    },
+                  ),
+                )
               ],
             ),
           )

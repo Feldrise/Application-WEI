@@ -107,6 +107,7 @@ class ProfilPageState extends State<ProfilPage> {
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
                                     print("Manage defis");
+                                    widget.onPush("manageDefis");
                                   },
                                 ),
                               ),

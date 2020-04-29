@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Activity {
-  final String id;
+  Activity();
+  
+  String id;
 
-  final String name;
-  final String description;
-  final String imageUrl;
-  final int value;
+  String name = "";
+  String description = "";
+  String imageUrl = "";
+  int value = 0;
 
-  final bool isRepetable;
-  final bool isForTeam;
+  bool isRepetable = false;
+  bool isForTeam = false;
 
   bool validatedByUser = false;
   bool pendingValidation = false;
@@ -24,6 +26,16 @@ class Activity {
     isRepetable = map['repetable'],
     isForTeam = map['is_for_team'];
 
+  Map<String, dynamic> toJson() {
+    return {
+      'image_url': imageUrl,
+      'name': name,
+      'description': description,
+      'value': value,
+      'repetable': isRepetable,
+      'is_for_team': isForTeam
+    };
+  }
 
   /// This is use to build the object from Firebase
   Activity.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data, id: snapshot.reference.documentID);
