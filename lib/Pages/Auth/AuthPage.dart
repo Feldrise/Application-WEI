@@ -1,5 +1,5 @@
-import 'package:appli_wei/Pages/LoginPage.dart';
-import 'package:appli_wei/Pages/SignUpPage.dart';
+import 'package:appli_wei/Pages/Auth/LoginPage.dart';
+import 'package:appli_wei/Pages/Auth/SignUpPage.dart';
 import 'package:appli_wei/Widgets/WeiTitle.dart';
 import 'package:flutter/material.dart';
 

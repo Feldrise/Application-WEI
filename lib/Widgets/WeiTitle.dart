@@ -16,7 +16,7 @@ class WeiTitle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Image(
-            image: AssetImage('assets/logo_white.png'),
+            image: AssetImage('assets/images/logo_white.png'),
             height: 64,
           ),
           SizedBox(height: 16,),

@@ -6,6 +6,7 @@ class User {
     this.secondName,
     this.email,
     this.role,
+    this.teamId,
     this.id,
   });
 
@@ -13,6 +14,12 @@ class User {
   final String secondName;
   final String email;
   final String role;
+
+  final String teamId;
+  int points = 0;
+
+  List<String> defisToValidate = [];
+  List<String> defisValidated = [];
 
   String id;
 
@@ -22,7 +29,18 @@ class User {
     firstName = map['first_name'],
     secondName = map['second_name'],
     email = map['email'],
-    role = map['role'];
+    role = map['role'],
+    teamId = map['team_id'],
+    points = map['points'] {
+      String defisToValidateString = map['defis_to_validate'];
+      String defisValidatedString = map['defis_validated'];
+
+      if (defisToValidateString.isNotEmpty)
+        defisToValidate = defisToValidateString.split(',');
+      
+      if (defisValidatedString.isNotEmpty)
+        defisValidated = defisValidatedString.split(',');
+    }
 
   /// This allow us to transform the user in Json
   Map<String, dynamic> toJson() {
@@ -31,11 +49,20 @@ class User {
       'first_name': firstName,
       'second_name': secondName,
       'email': email,
-      'role': role
+      'role': role,
+      'team_id': teamId,
+      'points': points,
+      'defis_to_validate': defisToValidate.join(','),
+      'defis_validated': defisValidated.join(',')
     };
   }
 
   /// This is use to build the object from Firebase
   User.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data, id: snapshot.reference.documentID);
+
+  ///This function update the user on Firebase
+  void update() {
+    Firestore.instance.collection("users").document(id).setData(toJson());
+  }
 
 }

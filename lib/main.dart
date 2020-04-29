@@ -1,8 +1,6 @@
 import 'package:appli_wei/Models/ApplicationSettings.dart';
-import 'package:appli_wei/Pages/AuthPage.dart';
-import 'package:appli_wei/Pages/HomePage.dart';
+import 'package:appli_wei/Pages/Auth/AuthPage.dart';
 import 'package:appli_wei/Pages/MainPage.dart';
-import 'package:appli_wei/Pages/SignUpPage.dart';
 import 'package:appli_wei/Pages/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

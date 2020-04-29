@@ -119,6 +119,7 @@ class RegisterPageState extends State<RegisterPage> {
       firstName: _firstNameController.text,
       secondName: _secondNameController.text,
       email: _emailController.text,
+      role: "player"
     );
     
     _statusMessage = await AuthHelper.instance.registerUser(toRegister, _passwordController.text);

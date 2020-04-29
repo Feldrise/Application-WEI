@@ -1,4 +1,6 @@
+import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 /** 
  * Cette page affiche les infos de l'utilisateurs 
@@ -21,7 +23,13 @@ class ProfilPageState extends State<ProfilPage> {
       ),
       body: Container(
         child: Center(
-          child: Text("Hello Profil"),
+          child: RaisedButton(
+            child: const Text('Déconnexion', style: TextStyle(color: Colors.white),),
+            color: Theme.of(context).accentColor,
+            onPressed: () async {
+              await Provider.of<ApplicationSettings>(context, listen: false).disconnect();
+            },
+          ),
         ),
       ),
     );

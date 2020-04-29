@@ -49,4 +49,13 @@ class ApplicationSettings with ChangeNotifier {
     _loggedUser = newLogin;
     notifyListeners();
   }
+
+  Future disconnect() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString("userId", '');
+    _loggedUser = null;
+
+    notifyListeners();
+  }
 }

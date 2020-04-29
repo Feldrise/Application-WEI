@@ -11,7 +11,7 @@ class SplashScreen extends StatelessWidget {
         color: Theme.of(context).accentColor,
         child: Center(
           child:Image (
-            image: AssetImage('assets/logo_white.png'),
+            image: AssetImage('assets/images/logo_white.png'),
             height: 128,
           ),
         ),
