@@ -18,6 +18,7 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _secondNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   
+  bool _loading = false;
   String _statusMessage = '';
 
   @override
@@ -27,7 +28,7 @@ class RegisterPageState extends State<RegisterPage> {
         title: Container(),
       ),
       body: Container(
-        child: SingleChildScrollView(
+        child: _loading ? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
@@ -37,6 +38,7 @@ class RegisterPageState extends State<RegisterPage> {
                 WeiTitle(title: "Inscription",),
                 TextInput(
                   controller: _emailController,
+                  inputType: TextInputType.emailAddress,
                   inputDecoration: const InputDecoration(labelText: 'Email'),
                   validator: (String value) {
                     // if (value.isEmpty || value.contains("etudiant.univ-rennes1.fr")) {
@@ -124,9 +126,15 @@ class RegisterPageState extends State<RegisterPage> {
       defisValidated: []
     );
     
+    setState(() {
+      _loading = true;
+    });
+
     _statusMessage = await AuthHelper.instance.registerUser(toRegister, _passwordController.text);
     
-    setState(() {});
+    setState(() {
+      _loading = false;
+    });
     
   }
 }

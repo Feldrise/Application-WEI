@@ -74,6 +74,7 @@ class LoginPageState extends State<LoginPage> {
                 WeiTitle(title: "Connexion",),
                 TextInput(
                   controller: _emailController,
+                  inputType: TextInputType.emailAddress,
                   inputDecoration: const InputDecoration(labelText: 'Email'),
                   validator: (String value) {
                     // if (value.isEmpty || value.contains("etudiant.univ-rennes1.fr")) {

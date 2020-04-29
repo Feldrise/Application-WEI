@@ -1,6 +1,7 @@
 import 'package:appli_wei/BottomNavigation.dart';
 import 'package:appli_wei/Pages/Home/HomePage.dart';
 import 'package:appli_wei/Pages/Profil/ManageDefisPage.dart';
+import 'package:appli_wei/Pages/Profil/ManageUsers.dart';
 import 'package:appli_wei/Pages/Profil/ProfilPage.dart';
 import 'package:appli_wei/Pages/RanksPage.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class TabNavigatorRoutes {
 
   // Pages of the profil
   static const String manageDefis = '/manageDefis';
+  static const String manageUsers = '/manageUsers';
 }
 
 class TabNavigator extends StatelessWidget {
@@ -48,7 +50,8 @@ class TabNavigator extends StatelessWidget {
         TabNavigatorRoutes.root: (context) => ProfilPage(
           onPush: (destinationPage) => _push(context, destinationPage: destinationPage),
         ),
-        TabNavigatorRoutes.manageDefis: (context) => ManageDefisPage()
+        TabNavigatorRoutes.manageDefis: (context) => ManageDefisPage(),
+        TabNavigatorRoutes.manageUsers: (context) => ManageUsersPage(),
       };
     }
 

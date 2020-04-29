@@ -56,7 +56,7 @@ class User {
   User.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data, id: snapshot.reference.documentID);
 
   ///This function update the user on Firebase
-  void update() {
+  Future update() async {
     Firestore.instance.collection("users").document(id).setData(toJson());
   }
 

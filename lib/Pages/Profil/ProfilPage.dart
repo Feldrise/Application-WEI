@@ -40,19 +40,23 @@ class ProfilPageState extends State<ProfilPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start, 
                     children: <Widget>[
-                      Expanded(
-                        flex: 4,
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        height: 92,
+                        width: 92,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(46),
+                          color: Colors.black,
+                        ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(32),
+                          borderRadius: BorderRadius.circular(46),
                           child: Image(
                             image: AssetImage('assets/images/logo_white.png'),
-                            height: 64,
-                            fit: BoxFit.fitHeight,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                       Expanded(
-                        flex: 6,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -118,6 +122,7 @@ class ProfilPageState extends State<ProfilPage> {
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
                                     print("Manage teams");
+                                    widget.onPush("manageUsers");
                                   },
                                 ),
                               ),

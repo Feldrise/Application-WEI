@@ -4,6 +4,7 @@ class TextInput extends StatelessWidget {
   const TextInput({
     Key key, 
     this.obscureText = false,
+    this.inputType = TextInputType.text,
     @required this.controller,
     @required this.inputDecoration,
     @required this.validator,
@@ -13,6 +14,8 @@ class TextInput extends StatelessWidget {
   final TextEditingController controller;
   final InputDecoration inputDecoration;
   final String Function(String) validator;
+
+  final TextInputType inputType;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class TextInput extends StatelessWidget {
       child: TextFormField(
         obscureText: obscureText,
         controller: controller,
+        keyboardType: inputType,
         decoration: inputDecoration,
         validator: validator,
       ),
