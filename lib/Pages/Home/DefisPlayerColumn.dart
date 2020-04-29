@@ -3,6 +3,7 @@ import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:appli_wei/Widgets/DefiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 class DefisPlayerColumn extends StatelessWidget {
@@ -27,13 +28,15 @@ class DefisPlayerColumn extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return GridView(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 5.0,
-        mainAxisSpacing: 5.0,
-        childAspectRatio: 6 / 11,
-      ),
+    List<StaggeredTile> _staggeredTiles = [];
+
+    for (int i = 0; i < snapshot.length; ++i) {
+      _staggeredTiles.add(StaggeredTile.extent(2, i.isEven ? 264 : 300));
+    }
+
+    return StaggeredGridView.count(
+      crossAxisCount: 4,
+      staggeredTiles: _staggeredTiles,
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
     );
   }

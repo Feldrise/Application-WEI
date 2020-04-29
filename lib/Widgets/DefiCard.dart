@@ -16,43 +16,21 @@ class DefiCard extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return WeiCard(
-      margin: EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       padding: EdgeInsets.all(0),
       constraints: BoxConstraints(maxWidth: 174),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
         children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Image.network(
-                defi.imageUrl,
-                height: 128,
-                fit: BoxFit.fitWidth,
-              ),
-              Visibility(
-                visible: defi.validatedByUser, 
-                child: Center(
-                  child: Image(
-                    image: AssetImage("assets/images/check.png"),
-                    height: 128,
-                    fit: BoxFit.fitWidth,
-                  )
-                ),
-              ),
-            ],
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          WeiCard(
+            margin: EdgeInsets.only(top: 64),
+            padding: EdgeInsets.only(top: 84, left: 8, right: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(defi.name, style: Theme.of(context).textTheme.subhead,),
-                Container(
-                  height: 64,
-                  margin: EdgeInsets.symmetric(vertical: 8),
+                Expanded(
                   child: Text(defi.description,),
                 ),
                 Visibility(
@@ -83,7 +61,49 @@ class DefiCard extends StatelessWidget {
                 )
               ],
             ),
-          )
+          ),
+          Positioned(
+            left: 12,
+            right: 12,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4.0, // has the effect of softening the shadow
+                    spreadRadius: 1, // has the effect of extending the shadow
+                    offset: Offset(
+                      0.0, // horizontal
+                      4.0, // vertical
+                    ),
+                  )
+                ],
+              ),
+              child: Stack(
+                children: <Widget>[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: Image.network(
+                      defi.imageUrl,
+                      height: 128,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                  Visibility(
+                    visible: defi.validatedByUser, 
+                    child: Center(
+                      child: Image(
+                        image: AssetImage("assets/images/check.png"),
+                        height: 128,
+                        fit: BoxFit.fitHeight,
+                      )
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

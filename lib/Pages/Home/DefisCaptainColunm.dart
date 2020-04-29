@@ -97,7 +97,7 @@ class DefisCaptainColumn extends StatelessWidget {
 
   Widget _buildListForUser(BuildContext context, List<DocumentSnapshot> snapshot, User userForDefis) {
     return Container(
-      height: 372,
+      height: 300,
       child: ListView(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
