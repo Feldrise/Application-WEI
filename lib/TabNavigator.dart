@@ -1,6 +1,7 @@
 import 'package:appli_wei/BottomNavigation.dart';
 import 'package:appli_wei/Pages/Home/HomePage.dart';
 import 'package:appli_wei/Pages/Profil/ManageDefisPage.dart';
+import 'package:appli_wei/Pages/Profil/ManageTeamsPage.dart';
 import 'package:appli_wei/Pages/Profil/ManageUsersPage.dart';
 import 'package:appli_wei/Pages/Profil/ProfilPage.dart';
 import 'package:appli_wei/Pages/RanksPage.dart';
@@ -12,6 +13,7 @@ class TabNavigatorRoutes {
   // Pages of the profil
   static const String manageDefis = '/manageDefis';
   static const String manageUsers = '/manageUsers';
+  static const String manageTeams = '/manageTeams';
 }
 
 class TabNavigator extends StatelessWidget {
@@ -52,6 +54,7 @@ class TabNavigator extends StatelessWidget {
         ),
         TabNavigatorRoutes.manageDefis: (context) => ManageDefisPage(),
         TabNavigatorRoutes.manageUsers: (context) => ManageUsersPage(),
+        TabNavigatorRoutes.manageTeams: (context) => ManageTeamsPage(),
       };
     }
 

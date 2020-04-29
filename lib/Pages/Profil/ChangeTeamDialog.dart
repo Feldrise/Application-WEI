@@ -60,11 +60,11 @@ class ChangeTeamDialogState extends State<ChangeTeamDialog> {
         });
       },
       value: _selectedTeamId,
-      items: snapshot.map((data) => _buildListItem(context, data)).toList(),
+      items: snapshot.map((data) => _buildDropdownItem(context, data)).toList(),
     );
   }
   
-  DropdownMenuItem _buildListItem(BuildContext context, DocumentSnapshot data) {
+  DropdownMenuItem _buildDropdownItem(BuildContext context, DocumentSnapshot data) {
     return DropdownMenuItem(
       child: Text(data["name"]),
       value: data.documentID,

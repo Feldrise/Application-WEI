@@ -107,7 +107,7 @@ class ProfilPageState extends State<ProfilPage> {
                             children: <Widget>[
                               Expanded(
                                 child: RaisedButton(
-                                  child: const Text('Gérer les défis', style: TextStyle(color: Colors.white),),
+                                  child: const Text('Gérer les défis', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
                                     print("Manage defis");
@@ -118,11 +118,22 @@ class ProfilPageState extends State<ProfilPage> {
                               SizedBox(width: 4,),
                               Expanded(
                                 child: RaisedButton(
-                                  child: const Text('Gérer les équipes', style: TextStyle(color: Colors.white),),
+                                  child: const Text('Gérer les joueurs', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
                                     print("Manage teams");
                                     widget.onPush("manageUsers");
+                                  },
+                                ),
+                              ),
+                              SizedBox(width: 4,),
+                              Expanded(
+                                child: RaisedButton(
+                                  child: const Text('Gérer les équipes', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+                                  color: Theme.of(context).accentColor,
+                                  onPressed: () async {
+                                    print("Manage teams");
+                                    widget.onPush("manageTeams");
                                   },
                                 ),
                               ),
