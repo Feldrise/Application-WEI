@@ -63,7 +63,7 @@ class DefiDetailPageState extends State<DefiDetailPage> {
               ),
             ),
             Visibility(
-              visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role == "player",
+              visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role == "player" && !widget.defi.isForTeam,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(

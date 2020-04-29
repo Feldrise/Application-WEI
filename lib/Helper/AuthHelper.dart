@@ -39,7 +39,9 @@ class AuthHelper {
         password: password,
       )).user;
 
-      if (firebaseUser != null && firebaseUser.isEmailVerified) {
+      // TODO: check email
+      // if (firebaseUser != null && firebaseUser.isEmailVerified) {
+      if (firebaseUser != null) {
         return firebaseUser.uid;
       }
     } catch (e) {}
