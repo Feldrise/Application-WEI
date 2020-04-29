@@ -118,6 +118,12 @@ class EditDefiState extends State<EditDefi> {
                         initialValue: widget.defi.isRepetable,
                         title: Text("Ce défi peut être répété"),
                         onSaved: (value) => widget.defi.isRepetable = value,
+                      ),
+                      CheckboxFormField(
+                        context: context,
+                        initialValue: widget.defi.isVisible,
+                        title: Text("Ce défi est visible"),
+                        onSaved: (value) => widget.defi.isVisible = value,
                       )
                     ]
                   )

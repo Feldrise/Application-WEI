@@ -15,7 +15,7 @@ class DefisPlayerColumn extends StatelessWidget {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
         for (DocumentSnapshot activitySnapshot in snapshot.data.documents) {
-          if (activitySnapshot.data['is_for_team']) 
+          if (activitySnapshot.data['is_for_team'] || !activitySnapshot.data['visible']) 
             continue;
 
           defisSnapshot.add(activitySnapshot);

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Activity {
   Activity();
-  
+
   String id;
 
   String name = "";
@@ -12,6 +12,7 @@ class Activity {
 
   bool isRepetable = false;
   bool isForTeam = false;
+  bool isVisible = false;
 
   bool validatedByUser = false;
   bool pendingValidation = false;
@@ -24,7 +25,8 @@ class Activity {
     imageUrl = map['image_url'],
     value = map['value'],
     isRepetable = map['repetable'],
-    isForTeam = map['is_for_team'];
+    isForTeam = map['is_for_team'],
+    isVisible = map['visible'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -33,7 +35,8 @@ class Activity {
       'description': description,
       'value': value,
       'repetable': isRepetable,
-      'is_for_team': isForTeam
+      'is_for_team': isForTeam,
+      'visible': isVisible
     };
   }
 
