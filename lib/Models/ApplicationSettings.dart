@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appli_wei/Models/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,18 +20,17 @@ class ApplicationSettings with ChangeNotifier {
     String userId = prefs.getString("userId") ?? '';
 
     if (userId.isNotEmpty) {
-      Firestore.instance.collection('users').getDocuments().then((snaphshot) {
-        snaphshot.documents.forEach((user) {
-          if (user.data["id"] == userId) {
-            _loggedUser = User.fromSnapshot(user);
-            initialized = true;
-          }
-        });
+      Completer completer = new Completer<User>();
+      
+      Firestore.instance.collection('users').document(userId).snapshots().listen((snapshot) {
+        completer.complete(User.fromSnapshot(snapshot));
       });
+
+      _loggedUser = await completer.future;
     }
-    else {
-      initialized = true;
-    }
+    
+    
+    initialized = true;
   }
 
   bool get initialized {
