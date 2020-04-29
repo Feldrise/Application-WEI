@@ -26,22 +26,36 @@ class LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     if (_userUID != null) {
-      return StreamBuilder<DocumentSnapshot>(
-        stream: Firestore.instance.collection('users').document(_userUID).snapshots(),
-        builder: (_, snapshot) {
-          if (!snapshot.hasData) return LinearProgressIndicator();
+      return Scaffold(
+        appBar: AppBar(
+          title: Container(),
+        ),
+        body: Container(
+          child: Center(
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: Firestore.instance.collection('users').document(_userUID).snapshots(),
+              builder: (_, snapshot) {
+                if (!snapshot.hasData) return CircularProgressIndicator();
 
-          SharedPreferences.getInstance().then((prefs) {
-            prefs.setString("userId", _userUID);
-          });
+                if (snapshot.data["team_id"] == null) {
+                  _userUID = '';
+                  return Text("Désolé, vous n'avez pas encore d'équipe. Merci de réessayer plus tard.");
+                }
 
-          User loggedUser = User.fromSnapshot(snapshot.data);
-          Provider.of<ApplicationSettings>(context).loggedUser = loggedUser;
-          // Provider.of<ApplicationSettings>(context).notifyListeners();
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setString("userId", _userUID);
+                });
 
-          Navigator.of(context).pop();
-          return Text("Connexion réussi");
-        },
+                User loggedUser = User.fromSnapshot(snapshot.data);
+                Provider.of<ApplicationSettings>(context).loggedUser = loggedUser;
+                // Provider.of<ApplicationSettings>(context).notifyListeners();
+
+                Navigator.of(context).pop();
+                return Text("Connexion réussi");
+              },
+            )
+          )
+        )
       );
     }
     
