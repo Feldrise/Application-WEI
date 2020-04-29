@@ -196,9 +196,7 @@ class DefiDetailPageState extends State<DefiDetailPage> {
     });
 
     // We add the points to the team
-    String teamId = Provider.of<ApplicationSettings>(context, listen: false).loggedUser.teamId;
-
-    Firestore.instance.collection("teams").document(teamId).updateData({
+    Firestore.instance.collection("teams").document(widget.userForDefi.teamId).updateData({
       'points': FieldValue.increment(widget.defi.value)
     });
 

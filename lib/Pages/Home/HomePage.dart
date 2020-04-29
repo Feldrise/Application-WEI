@@ -76,10 +76,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
             child: TabBarView(
               controller: _tabController,
               children: <Widget>[
-                (applicationSettings.loggedUser.role == "captain") 
+                (applicationSettings.loggedUser.role == "captain" || applicationSettings.loggedUser.role == "admin") 
                 ? DefisCaptainColumn()
-                : (applicationSettings.loggedUser.role == "admin") 
-                ? Center(child: Text("admin validation"),) 
                 : DefisPlayerColumn(),
 
                 Center(child: Text("Défis d'équipe"),)
