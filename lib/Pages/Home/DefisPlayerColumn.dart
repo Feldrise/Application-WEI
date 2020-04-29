@@ -32,7 +32,7 @@ class DefisPlayerColumn extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 5.0,
         mainAxisSpacing: 5.0,
-        childAspectRatio: 5 / 8,
+        childAspectRatio: 6 / 11,
       ),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
     );

@@ -1,20 +1,24 @@
 import 'package:appli_wei/Models/Activity.dart';
+import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Pages/Home/DefiDetailPage.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:flutter/material.dart';
 
 class DefiCard extends StatelessWidget {
-  const DefiCard({Key key, @required this.defi}) : super(key: key);
+  const DefiCard({Key key, @required this.defi, this.userForDefis}) : super(key: key);
 
   final Activity defi;
+
+  final User userForDefis;
   
   @override
   Widget build(BuildContext context) {
     return WeiCard(
+      margin: EdgeInsets.symmetric(vertical: 32, horizontal: 8),
       padding: EdgeInsets.all(0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Stack(
             children: <Widget>[
@@ -39,7 +43,7 @@ class DefiCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(defi.name, style: Theme.of(context).textTheme.subhead,),
                 Container(
@@ -53,7 +57,7 @@ class DefiCard extends StatelessWidget {
                     print("Défis détails required");
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DefiDetailPage(defi: defi,)),
+                      MaterialPageRoute(builder: (context) => DefiDetailPage(defi: defi, userForDefi: userForDefis,)),
                     );
                   },
                 ),

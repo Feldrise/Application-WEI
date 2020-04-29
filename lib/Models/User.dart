@@ -7,6 +7,8 @@ class User {
     this.email,
     this.role,
     this.teamId,
+    this.defisToValidate,
+    this.defisValidated,
     this.id,
   });
 
@@ -18,8 +20,8 @@ class User {
   final String teamId;
   int points = 0;
 
-  List<String> defisToValidate = [];
-  List<String> defisValidated = [];
+  final List<dynamic> defisToValidate;
+  final List<dynamic> defisValidated;
 
   String id;
 
@@ -31,16 +33,9 @@ class User {
     email = map['email'],
     role = map['role'],
     teamId = map['team_id'],
-    points = map['points'] {
-      String defisToValidateString = map['defis_to_validate'];
-      String defisValidatedString = map['defis_validated'];
-
-      if (defisToValidateString.isNotEmpty)
-        defisToValidate = defisToValidateString.split(',');
-      
-      if (defisValidatedString.isNotEmpty)
-        defisValidated = defisValidatedString.split(',');
-    }
+    points = map['points'],
+    defisToValidate = map['defis_to_validate'],
+    defisValidated = map['defis_validated'];
 
   /// This allow us to transform the user in Json
   Map<String, dynamic> toJson() {
@@ -52,8 +47,8 @@ class User {
       'role': role,
       'team_id': teamId,
       'points': points,
-      'defis_to_validate': defisToValidate.join(','),
-      'defis_validated': defisValidated.join(',')
+      'defis_to_validate': defisToValidate,
+      'defis_validated': defisValidated
     };
   }
 
