@@ -122,6 +122,19 @@ class EditDefiState extends State<EditDefi> {
                     ]
                   )
                 ),
+                Visibility(
+                  visible: widget.defi.id != null,
+                  child: RaisedButton(
+                    child: const Text('Supprimer le défi...', style: TextStyle(color: Colors.white),),
+                    color: Theme.of(context).accentColor,
+                    onPressed: () async {
+                      print("Delete defi");
+                      
+                      await _deleteDefi();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
               ],
             ),
           ),
@@ -159,6 +172,39 @@ class EditDefiState extends State<EditDefi> {
     else {
       await defisCollectionReference.document(widget.defi.id).setData(widget.defi.toJson());
     }
-    
+  }
+
+  Future _deleteDefi() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext  context) {
+        return AlertDialog(
+          title: Text("Supression"),
+          content: Text("Voulez vous vraiment supprimer ce défi ?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Non", style: TextStyle(color: Theme.of(context).accentColor),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text("Oui", style: TextStyle(color: Theme.of(context).accentColor),),
+              onPressed: () async {
+                setState(() {
+                  _updating = true;
+                });
+
+                CollectionReference defisCollectionReference = Firestore.instance.collection("activities");
+                
+                await defisCollectionReference.document(widget.defi.id).delete();
+                
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      }
+    );
   }
 }

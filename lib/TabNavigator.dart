@@ -1,7 +1,7 @@
 import 'package:appli_wei/BottomNavigation.dart';
 import 'package:appli_wei/Pages/Home/HomePage.dart';
 import 'package:appli_wei/Pages/Profil/ManageDefisPage.dart';
-import 'package:appli_wei/Pages/Profil/ManageUsers.dart';
+import 'package:appli_wei/Pages/Profil/ManageUsersPage.dart';
 import 'package:appli_wei/Pages/Profil/ProfilPage.dart';
 import 'package:appli_wei/Pages/RanksPage.dart';
 import 'package:flutter/material.dart';
