@@ -40,62 +40,64 @@ class DefiDetailPageState extends State<DefiDetailPage> {
         title: Text("Défis : ${widget.defi.name}"),
       ),
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Image.network(
-              widget.defi.imageUrl,
-              fit: BoxFit.fitWidth,
-            ),
-            WeiCard(
-              child: Text("Status du défis : " + defiStatutString()),
-            ),
-            WeiCard(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(widget.defi.name, style: Theme.of(context).textTheme.subtitle,),
-                  SizedBox(height: 16),
-                  Text(widget.defi.description)
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Image.network(
+                widget.defi.imageUrl,
+                fit: BoxFit.fitWidth,
               ),
-            ),
-            Visibility(
-              visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role == "player" && !widget.defi.isForTeam,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
-                  child: const Text('Envoyer une preuve de validation du défis', style: TextStyle(color: Colors.white),),
-                  color: Theme.of(context).accentColor,
-                  onPressed: (widget.defi.pendingValidation || widget.defi.validatedByUser) ? null : _uploadProof,
+              WeiCard(
+                child: Text("Status du défis : " + defiStatutString()),
+              ),
+              WeiCard(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(widget.defi.name, style: Theme.of(context).textTheme.subtitle,),
+                    SizedBox(height: 16),
+                    Text(widget.defi.description)
+                  ],
                 ),
               ),
-            ),
-            Visibility(
-              visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role != "player" && widget.userForDefi != null && !widget.defi.isForTeam,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
-                  child: const Text('Voir la preuve de validation', style: TextStyle(color: Colors.white),),
-                  color: Theme.of(context).accentColor,
-                  onPressed: _viewProof,
+              Visibility(
+                visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role == "player" && !widget.defi.isForTeam,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
+                    child: const Text('Envoyer une preuve de validation du défis', style: TextStyle(color: Colors.white),),
+                    color: Theme.of(context).accentColor,
+                    onPressed: (widget.defi.pendingValidation || widget.defi.validatedByUser) ? null : _uploadProof,
+                  ),
                 ),
               ),
-            ),
-            Visibility(
-              visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role != "player" && widget.userForDefi != null,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
-                  child: const Text('Valider le défis', style: TextStyle(color: Colors.white),),
-                  color: Theme.of(context).accentColor,
-                  onPressed: _validateDefis,
+              Visibility(
+                visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role != "player" && widget.userForDefi != null && !widget.defi.isForTeam,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
+                    child: const Text('Voir la preuve de validation', style: TextStyle(color: Colors.white),),
+                    color: Theme.of(context).accentColor,
+                    onPressed: _viewProof,
+                  ),
                 ),
               ),
-            ),
-          ],
+              Visibility(
+                visible: Provider.of<ApplicationSettings>(context, listen: false).loggedUser.role != "player" && widget.userForDefi != null,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
+                    child: const Text('Valider le défis', style: TextStyle(color: Colors.white),),
+                    color: Theme.of(context).accentColor,
+                    onPressed: _validateDefis,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

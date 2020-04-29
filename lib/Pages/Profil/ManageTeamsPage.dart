@@ -85,7 +85,7 @@ class ManageTeamsPage extends StatelessWidget {
                   padding: EdgeInsets.only(left: 16),
                   child: Text(team.name, style: Theme.of(context).textTheme.subhead,),
                 ),
-                team.captainId == null 
+                team.captainId == null || team.captainId.isEmpty
                 ? Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Text("L'équipe n'a pas encore de capitaine",)

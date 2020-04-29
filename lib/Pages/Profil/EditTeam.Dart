@@ -143,7 +143,7 @@ class EditTeamState extends State<EditTeam> {
 
   Future _saveDefiToFirebase() async {
     CollectionReference teamsCollectionReference = Firestore.instance.collection("teams");
-    CollectionReference userCollectionReference = Firestore.instance.collection("users");
+    CollectionReference usersCollectionReference = Firestore.instance.collection("users");
 
     if (widget.team.id == null) {
       widget.team.id = (await teamsCollectionReference.add(widget.team.toJson())).documentID;
@@ -154,14 +154,14 @@ class EditTeamState extends State<EditTeam> {
 
     if (_initialCaptainId != widget.team.captainId) {
       if (_initialCaptainId.isNotEmpty && !widget.team.captainIsAdmin) {
-        await userCollectionReference.document(_initialCaptainId).updateData({
+        await usersCollectionReference.document(_initialCaptainId).updateData({
           'role': 'player',
         });
       }
 
       // We check if the new user is an admin
       Completer completer = new Completer<User>();
-      userCollectionReference.document(widget.team.captainId).snapshots().listen((data) {
+      usersCollectionReference.document(widget.team.captainId).snapshots().listen((data) {
         completer.complete(User.fromSnapshot(data));
       });
 
@@ -169,13 +169,13 @@ class EditTeamState extends State<EditTeam> {
 
       // We change the role of the new captain
       if (newCaptain.role != "admin") {
-        await userCollectionReference.document(newCaptain.id).updateData({
+        await usersCollectionReference.document(newCaptain.id).updateData({
           'role': 'captain',
         });
       }
 
       // We change the team of the new captain
-      await userCollectionReference.document(newCaptain.id).updateData({
+      await usersCollectionReference.document(newCaptain.id).updateData({
         'team_id': widget.team.id,
       });
     }
@@ -220,6 +220,11 @@ class EditTeamState extends State<EditTeam> {
                 });
 
                 await completer.future;
+                if (_initialCaptainId.isNotEmpty && !widget.team.captainIsAdmin) {
+                  await usersCollectionReference.document(_initialCaptainId).updateData({
+                    'role': 'player',
+                  });
+                }
                 await teamsCollectionReference.document(widget.team.id).delete();
 
                 Navigator.of(context).pop();

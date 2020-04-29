@@ -61,7 +61,8 @@ class ProfilPageState extends State<ProfilPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text("${currentUser.firstName} ${currentUser.secondName}", style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: Colors.white)),),
-                            StreamBuilder<DocumentSnapshot>(
+                            currentUser.teamId != null
+                            ? StreamBuilder<DocumentSnapshot>(
                               stream: Firestore.instance.collection("teams").document(currentUser.teamId).snapshots(),
                               builder: (context, teamSnapshot) {
                                 if (!teamSnapshot.hasData) return LinearProgressIndicator();
@@ -69,6 +70,7 @@ class ProfilPageState extends State<ProfilPage> {
                                 return Text("Equipe " + teamSnapshot.data["name"], style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: Colors.white)),);
                               },
                             )
+                            : Text("Vous n'avez pas encore d'équipe", style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: Colors.white))),
                           ],
                         ),
                       )

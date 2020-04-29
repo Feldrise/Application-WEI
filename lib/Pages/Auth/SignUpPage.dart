@@ -71,7 +71,6 @@ class RegisterPageState extends State<RegisterPage> {
                 ),
                 TextInput(
                   controller: _passwordController,
-                  obscureText: true,
                   inputDecoration: const InputDecoration(labelText: 'Mot de Passe'),
                   validator: (String value) {
                     if (value.isEmpty) {

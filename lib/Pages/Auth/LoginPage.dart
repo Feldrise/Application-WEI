@@ -37,7 +37,7 @@ class LoginPageState extends State<LoginPage> {
               builder: (_, snapshot) {
                 if (!snapshot.hasData) return CircularProgressIndicator();
 
-                if (snapshot.data["team_id"] == null) {
+                if (snapshot.data["team_id"] == null && snapshot.data["role"] != "admin") {
                   _userUID = '';
                   return Text("Désolé, vous n'avez pas encore d'équipe. Merci de réessayer plus tard.");
                 }
