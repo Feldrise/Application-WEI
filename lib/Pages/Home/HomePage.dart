@@ -96,42 +96,4 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
   _buildItem(HomeTabItem item) {
     return Tab(text: homeTabName[item],);
   }
-
-  // Widget _buildBody(BuildContext context) {
-  //   return StreamBuilder<QuerySnapshot>(
-  //     stream: Firestore.instance.collection('activities').snapshots(),
-  //     builder: (context, snapshot) {
-  //       if (!snapshot.hasData) return LinearProgressIndicator();
-
-  //       return _buildList(context, snapshot.data.documents);
-  //     },
-  //   );
-  // }
-
-  // Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-  //   return ListView(
-  //     padding: const EdgeInsets.only(top: 20.0),
-  //     children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-  //   );
-  // }
-
-  // Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-  //   final activity = Activity.fromSnapshot(data);
-
-  //   return Padding(
-  //     key: ValueKey(activity.name),
-  //     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-  //     child: Container(
-  //       decoration: BoxDecoration(
-  //         border: Border.all(color: Colors.grey),
-  //         borderRadius: BorderRadius.circular(5.0),
-  //       ),
-  //       child: ListTile(
-  //         title: Text(activity.name),
-  //         subtitle: Text(activity.description),
-  //         onTap: () => print(activity),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

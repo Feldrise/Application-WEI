@@ -4,10 +4,11 @@ import 'package:appli_wei/Pages/Profil/ManageDefisPage.dart';
 import 'package:appli_wei/Pages/Profil/ManageTeamsPage.dart';
 import 'package:appli_wei/Pages/Profil/ManageUsersPage.dart';
 import 'package:appli_wei/Pages/Profil/ProfilPage.dart';
-import 'package:appli_wei/Pages/RanksPage.dart';
+import 'package:appli_wei/Pages/Rank/RanksPage.dart';
 import 'package:flutter/material.dart';
 
 class TabNavigatorRoutes {
+  // The root page. Could either be home, rank or profile
   static const String root = '/';
 
   // Pages of the profil
