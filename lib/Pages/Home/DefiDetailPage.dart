@@ -163,6 +163,9 @@ class DefiDetailPageState extends State<DefiDetailPage> {
               if (snapshot.connectionState == ConnectionState.waiting)
                 return CircularProgressIndicator();
 
+              if (snapshot.hasError) 
+                return Text("Erreur : " + snapshot.error.toString());
+
               return Container();
             },
           ),

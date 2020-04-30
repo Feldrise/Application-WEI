@@ -1,11 +1,19 @@
 import 'package:appli_wei/Models/ApplicationSettings.dart';
+import 'package:appli_wei/Models/AuthService.Dart';
 import 'package:appli_wei/Pages/Auth/AuthPage.dart';
 import 'package:appli_wei/Pages/MainPage.dart';
 import 'package:appli_wei/Pages/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    ChangeNotifierProvider<AuthService>(
+      child: MyApp(),
+      create: (context) => AuthService(),
+    )
+  );
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -39,18 +47,23 @@ class MyApp extends StatelessWidget {
             // caption: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.black87)
           ),
         ),
-        home: Consumer<ApplicationSettings>(
-          builder: (context, applicationSettings, child) {
-            if (!applicationSettings.initialized) {
+        home: FutureBuilder(
+          // get the Provider, and call the getUser method
+          future: Provider.of<AuthService>(context).getUser(),
+          // wait for the future to resolve and render the appropriate
+          // widget for HomePage or LoginPage
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                Provider.of<ApplicationSettings>(context, listen: false).loggedUser = snapshot.data;
+                return MainPage(); 
+              } 
+              
+              return AuthPage();
+            } else {
               return SplashScreen();
             }
-
-            if (applicationSettings.loggedUser == null) {
-              return AuthPage();
-            }
-
-            return MainPage();
-          }
+          },
         ),
         // home: (applicationSettings.loggedUser == null) ? AuthPage() : MainPage(),
       )

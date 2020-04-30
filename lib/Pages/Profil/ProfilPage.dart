@@ -1,10 +1,10 @@
 import 'package:appli_wei/Models/ApplicationSettings.dart';
+import 'package:appli_wei/Models/AuthService.Dart';
 import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -87,7 +87,7 @@ class ProfilPageState extends State<ProfilPage> {
                           child: const Text('Déconnexion', style: TextStyle(color: Colors.white),),
                           color: Theme.of(context).accentColor,
                           onPressed: () async {
-                            await Provider.of<ApplicationSettings>(context, listen: false).disconnect();
+                            await Provider.of<AuthService>(context, listen: false).disconnect(context);
                           },
                         ),
                         Visibility(

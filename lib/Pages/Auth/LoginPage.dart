@@ -1,14 +1,15 @@
 
+import 'dart:async';
+
 import 'package:appli_wei/Helper/AuthHelper.dart';
 import 'package:appli_wei/Models/User.dart';
-import 'package:appli_wei/Models/ApplicationSettings.dart';
+import 'package:appli_wei/Models/AuthService.Dart';
 import 'package:appli_wei/Widgets/TextInput.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:appli_wei/Widgets/WeiTitle.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -21,50 +22,16 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   
   String _statusMessage = '';
-  String _userUID;
+  bool _loading = false;
 
   @override
-  Widget build(BuildContext context) {
-    if (_userUID != null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Container(),
-        ),
-        body: Container(
-          child: Center(
-            child: StreamBuilder<DocumentSnapshot>(
-              stream: Firestore.instance.collection('users').document(_userUID).snapshots(),
-              builder: (_, snapshot) {
-                if (!snapshot.hasData) return CircularProgressIndicator();
-
-                if (snapshot.data["team_id"] == null && snapshot.data["role"] != "admin") {
-                  _userUID = '';
-                  return Text("Désolé, vous n'avez pas encore d'équipe. Merci de réessayer plus tard.");
-                }
-
-                SharedPreferences.getInstance().then((prefs) {
-                  prefs.setString("userId", _userUID);
-                });
-
-                User loggedUser = User.fromSnapshot(snapshot.data);
-                Provider.of<ApplicationSettings>(context).loggedUser = loggedUser;
-                // Provider.of<ApplicationSettings>(context).notifyListeners();
-
-                Navigator.of(context).pop();
-                return Text("Connexion réussi");
-              },
-            )
-          )
-        )
-      );
-    }
-    
+  Widget build(BuildContext context) {    
     return Scaffold(
       appBar: AppBar(
         title: Container(),
       ),
       body: Container(
-        child: SingleChildScrollView(
+        child: _loading ? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
@@ -132,14 +99,38 @@ class LoginPageState extends State<LoginPage> {
 
   // Example code for registration.
   void _login() async {
-    
-    _userUID = await AuthHelper.instance.loginUser(_emailController.text, _passwordController.text);
-    
-    setState(() {
-      if (_userUID == null) {
-        _statusMessage = "Erreur lors de la connexion. Vérifiez que vous avez entré le bon mot de passe, la bonne adresse mail et que vous l'avez vérifié.";
+    String newStatusMessage = '';
+
+    String userId = await AuthHelper.instance.loginUser(_emailController.text, _passwordController.text);
+    User loggedUser;
+
+    if (userId != null) {
+      Completer completer = new Completer<User>();
+      
+      Firestore.instance.collection('users').document(userId).snapshots().listen((snapshot) {
+        completer.complete(User.fromSnapshot(snapshot));
+      });
+
+      loggedUser = await completer.future;
+
+      if (loggedUser.teamId == null && loggedUser.role != "admin") {
+        newStatusMessage = "Désolé, vous n'avez pas encore d'équipe. Merci de réessayer plus tard.";
+        loggedUser = null;
       }
-    });
-    
+      else {
+        await Provider.of<AuthService>(context, listen: false).setUser(loggedUser);
+
+        newStatusMessage = "Connexion réussi !";
+
+        Navigator.of(context).pop();
+      }
+    }
+    else {
+      newStatusMessage = "Erreur lors de la connexion. Vérifiez que vous avez entré le bon mot de passe, la bonne adresse mail et que vous l'avez vérifié.";
+    }
+
+    setState(() {
+      _statusMessage = newStatusMessage;
+    });    
   }
 }
