@@ -98,6 +98,7 @@ class DefiDetailPageState extends State<DefiDetailPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 32,)
             ],
           ),
         ),

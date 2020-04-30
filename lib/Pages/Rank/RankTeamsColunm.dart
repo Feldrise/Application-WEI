@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:appli_wei/Models/Team.dart';
+import 'package:appli_wei/Pages/Rank/TeamDetailsPage.dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -128,6 +129,7 @@ class RankTeamsColumn extends StatelessWidget {
 
     Color cardColor = isUserTeam ? Theme.of(context).accentColor : Theme.of(context).cardColor;
     Color textColor = isUserTeam ? Colors.white : Colors.black87;
+    Color buttonColor = isUserTeam ? Colors.white : Theme.of(context).accentColor;
 
     return WeiCard(
       margin: isUserTeam ? EdgeInsets.symmetric(vertical: 4, horizontal: 4) : EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -141,7 +143,7 @@ class RankTeamsColumn extends StatelessWidget {
             flex: 7,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Text("${team.name}", style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: textColor)),),
                 team.captainId == null 
@@ -155,9 +157,20 @@ class RankTeamsColumn extends StatelessWidget {
                   },
                 ),
                 Text("Points : ${team.points}", style: TextStyle(color: textColor),),
+                RaisedButton(
+                  child: Text("Voir l'équipe", style: TextStyle(color: cardColor),),
+                  color: buttonColor,
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TeamDetailPage(team: team,)),
+                    );
+                  },
+                )
               ],
             ),
           ),
+          SizedBox(width: 8,),
           Expanded(
             flex: 3,
             child: Text("#$index", style: Theme.of(context).textTheme.title.merge(TextStyle(color: textColor)),),
