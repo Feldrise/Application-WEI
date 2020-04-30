@@ -122,7 +122,7 @@ class RegisterPageState extends State<RegisterPage> {
       email: _emailController.text,
       role: "player",
       defisToValidate: [],
-      defisValidated: []
+      defisValidated: {}
     );
     
     setState(() {

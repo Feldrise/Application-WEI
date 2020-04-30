@@ -8,14 +8,16 @@ class Activity {
   String name = "";
   String description = "";
   String imageUrl = "";
+  
   int value = 0;
+  int numberOfRepetition = 1;
 
-  bool isRepetable = false;
   bool isForTeam = false;
   bool isVisible = false;
 
   bool validatedByUser = false;
   bool pendingValidation = false;
+  int userRepetition = 0;
 
   /// This is use to build the object from 
   /// a [map] (generally comming from databases)
@@ -24,7 +26,7 @@ class Activity {
     description = map['description'],
     imageUrl = map['image_url'],
     value = map['value'],
-    isRepetable = map['repetable'],
+    numberOfRepetition = map['number_of_repetition'],
     isForTeam = map['is_for_team'],
     isVisible = map['visible'];
 
@@ -34,7 +36,7 @@ class Activity {
       'name': name,
       'description': description,
       'value': value,
-      'repetable': isRepetable,
+      'number_of_repetition': numberOfRepetition,
       'is_for_team': isForTeam,
       'visible': isVisible
     };

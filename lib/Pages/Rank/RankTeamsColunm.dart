@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:appli_wei/Models/Team.dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
@@ -9,47 +11,106 @@ import 'package:provider/provider.dart';
 class RankTeamsColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('teams').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[ 
+        Visibility(
+          visible: Provider.of<ApplicationSettings>(context).loggedUser.role == "admin",
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: RaisedButton(
+              child: const Text('Changer la visibilité du classement', style: TextStyle(color: Colors.white),),
+              color: Theme.of(context).accentColor,
+              onPressed: () async {
+                await _toggleRankVisiblity();
+              },
+            ),
+          ),
+        ),
+        Flexible(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: Firestore.instance.collection('settings').document('application').snapshots(),
+            builder: (context, settings) {
+              if (!settings.hasData) return Center(child: CircularProgressIndicator(),);
 
-        List<DocumentSnapshot> teamsSnaphot = [];
+              bool isAdmin = Provider.of<ApplicationSettings>(context).loggedUser.role == "admin";
 
-        for (DocumentSnapshot teamSnapshot in snapshot.data.documents) {
-          // We dont want to show every teams
-          teamsSnaphot.add(teamSnapshot);
-        }
+              if (!settings.data['show_teams_rank'] && !isAdmin) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(
+                      image: AssetImage("assets/images/logo.png"),
+                      height: 128,
+                    ),
+                    SizedBox(height: 16,),
+                    Text("Le classement des joueurs est caché aux yeux de tous pour l'instant... Reviens plus tard. =P", textAlign: TextAlign.center,)
+                  ],
+                );  
+              }
 
-        // We sort the teams
-        teamsSnaphot.sort((team1, team2) {
-          if (team1.data['points'] > team2.data['points'])
-            return -1;
-          
-          if (team1.data['points'] < team2.data['points'])
-            return 1;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Visibility(
+                    visible: isAdmin,
+                    child: WeiCard(
+                      child: Text(settings.data['show_teams_rank'] ? "Le classement est visible de tous" : "Le classement n'est visible que par les administrateurs"),
+                    ),
+                  ),
+                  Flexible(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: Firestore.instance.collection('teams').snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
 
-          return 0;
-        });
+                        List<DocumentSnapshot> teamsSnaphot = [];
 
-        if (teamsSnaphot.isEmpty) {
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/images/logo.png"),
-                height: 128,
-              ),
-              SizedBox(height: 16,),
-              Text("Il n'y a pas d'équipe à classer pour le moment.")
-            ],
-          );  
-        }
+                        for (DocumentSnapshot teamSnapshot in snapshot.data.documents) {
+                          // We dont want to show admin and captain on the rank page
+                          if (teamSnapshot.data['role'] == 'captain' || teamSnapshot.data['role'] == 'admin') 
+                            continue;
 
-        return _buildList(context, teamsSnaphot);
+                          teamsSnaphot.add(teamSnapshot);
+                        }
 
-      }
+                        // We sort the teams
+                        teamsSnaphot.sort((team1, team2) {
+                          if (team1.data['points'] > team2.data['points'])
+                            return -1;
+                          
+                          if (team1.data['points'] < team2.data['points'])
+                            return 1;
+
+                          return 0;
+                        });
+
+                        if (teamsSnaphot.isEmpty) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image(
+                                image: AssetImage("assets/images/logo.png"),
+                                height: 128,
+                              ),
+                              SizedBox(height: 16,),
+                              Text("Il n'y a pas d'équipe à classer pour le moment.")
+                            ],
+                          );  
+                        }
+
+                        return _buildList(context, teamsSnaphot);
+
+                      }
+                    )
+                  )
+                ]
+              );
+            },
+          )
+        ),
+      ]
     );
   }
 
@@ -104,5 +165,19 @@ class RankTeamsColumn extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future _toggleRankVisiblity() async {
+    // We check the current state of the visibility
+    Completer completer = new Completer<bool>();
+    Firestore.instance.collection('settings').document('application').snapshots().listen((data) {
+      completer.complete(data.data['show_teams_rank']);
+    });
+
+    bool show = await completer.future;
+
+    await Firestore.instance.collection('settings').document('application').updateData({
+      'show_teams_rank': !show
+    });
   }
 }

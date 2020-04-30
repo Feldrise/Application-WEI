@@ -1,5 +1,6 @@
 import 'package:appli_wei/Models/Activity.dart';
 import 'package:appli_wei/Models/ApplicationSettings.dart';
+import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Widgets/DefiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +44,17 @@ class DefisPlayerColumn extends StatelessWidget {
   
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final activity = Activity.fromSnapshot(data);
+    User loggedUser = Provider.of<ApplicationSettings>(context, listen: false).loggedUser;
 
-    if (Provider.of<ApplicationSettings>(context, listen: false).loggedUser.defisToValidate.contains(activity.id)) 
+    if (loggedUser.defisToValidate.contains(activity.id)) 
       activity.pendingValidation = true;
 
-    if (Provider.of<ApplicationSettings>(context, listen: false).loggedUser.defisValidated.contains(activity.id)) 
-      activity.validatedByUser = true;
+    if (loggedUser.defisValidated[activity.id] != null) { 
+      if (loggedUser.defisValidated[activity.id] >= activity.numberOfRepetition)
+        activity.validatedByUser = true;
+      
+      activity.userRepetition = loggedUser.defisValidated[activity.id];
+    }
 
     return DefiCard(defi: activity,);
   }

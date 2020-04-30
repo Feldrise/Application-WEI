@@ -109,12 +109,16 @@ class DefisCaptainColumn extends StatelessWidget {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data, User userForDefis) {
     final activity = Activity.fromSnapshot(data);
 
-    if (Provider.of<ApplicationSettings>(context, listen: false).loggedUser.defisToValidate.contains(activity.id)) 
+    if (userForDefis.defisToValidate.contains(activity.id)) 
       activity.pendingValidation = true;
 
-    if (Provider.of<ApplicationSettings>(context, listen: false).loggedUser.defisValidated.contains(activity.id)) 
-      activity.validatedByUser = true;
+    if (userForDefis.defisValidated[activity.id] != null) { 
+      if (userForDefis.defisValidated[activity.id] >= activity.numberOfRepetition)
+        activity.validatedByUser = true;
+      
+      activity.userRepetition = userForDefis.defisValidated[activity.id];
+    }
 
-    return DefiCard(defi: activity, userForDefis: userForDefis,);
+    return DefiCard(defi: activity, userForDefi: userForDefis,);
   }
 }

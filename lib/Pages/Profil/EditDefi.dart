@@ -100,6 +100,22 @@ class EditDefiState extends State<EditDefi> {
                         },
                         onSaved: (value) => widget.defi.value = num.tryParse(value)
                       ),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                            WhitelistingTextInputFormatter.digitsOnly
+                        ],
+                        initialValue: widget.defi.numberOfRepetition.toString(),
+                        decoration: InputDecoration(labelText: "Nombre de fois que le défi doit être réalisé"),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Donnez un nombre de fois que le défi doit être réalisé.";
+                          }
+
+                          return null;
+                        },
+                        onSaved: (value) => widget.defi.numberOfRepetition = num.tryParse(value)
+                      ),
                     ],
                   ),
                 ),
@@ -112,12 +128,6 @@ class EditDefiState extends State<EditDefi> {
                         initialValue: widget.defi.isForTeam,
                         title: Text("Ce défi est un défi d'équipe"),
                         onSaved: (value) => widget.defi.isForTeam = value,
-                      ),
-                      CheckboxFormField(
-                        context: context,
-                        initialValue: widget.defi.isRepetable,
-                        title: Text("Ce défi peut être répété"),
-                        onSaved: (value) => widget.defi.isRepetable = value,
                       ),
                       CheckboxFormField(
                         context: context,

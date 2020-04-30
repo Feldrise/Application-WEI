@@ -1,5 +1,6 @@
 import 'package:appli_wei/Models/Activity.dart';
 import 'package:appli_wei/Models/ApplicationSettings.dart';
+import 'package:appli_wei/Models/Team.dart';
 import 'package:appli_wei/Widgets/DefiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +23,22 @@ class TeamDefisPlayerColumn extends StatelessWidget {
           defisSnapshot.add(activitySnapshot);
         }
 
-        return _buildList(context, defisSnapshot);
+        String teamId = Provider.of<ApplicationSettings>(context).loggedUser.teamId;
+        return StreamBuilder<DocumentSnapshot>(
+          stream: Firestore.instance.collection('teams').document(teamId).snapshots(),
+          builder: (context, teamSnapshot) {
+            if (!snapshot.hasData) return LinearProgressIndicator(); 
+
+            Team teamForDefi = Team.fromSnapshot(teamSnapshot.data);
+
+            return _buildList(context, defisSnapshot, teamForDefi);
+          },
+        );
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, Team teamForDefi) {
     List<StaggeredTile> _staggeredTiles = [];
 
     for (int i = 0; i < snapshot.length; ++i) {
@@ -37,19 +48,25 @@ class TeamDefisPlayerColumn extends StatelessWidget {
     return StaggeredGridView.count(
       crossAxisCount: 4,
       staggeredTiles: _staggeredTiles,
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+      children: snapshot.map((data) => _buildListItem(context, data, teamForDefi)).toList(),
     );
   }
   
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data, Team teamForDefi) {
     final activity = Activity.fromSnapshot(data);
 
-    if (Provider.of<ApplicationSettings>(context, listen: false).loggedUser.defisToValidate.contains(activity.id)) 
-      activity.pendingValidation = true;
+    if (teamForDefi.defisValidated[activity.id] != null) { 
+      if (teamForDefi.defisValidated[activity.id] >= activity.numberOfRepetition)
+        activity.validatedByUser = true;
+      
+      activity.userRepetition = teamForDefi.defisValidated[activity.id];
+    }
 
-    if (Provider.of<ApplicationSettings>(context, listen: false).loggedUser.defisValidated.contains(activity.id)) 
-      activity.validatedByUser = true;
 
-    return DefiCard(defi: activity, userForDefis: Provider.of<ApplicationSettings>(context, listen: false).loggedUser,);
+    return DefiCard(
+      defi: activity, 
+      userForDefi: Provider.of<ApplicationSettings>(context, listen: false).loggedUser,
+      teamForDefi: teamForDefi,
+    );
   }
 }

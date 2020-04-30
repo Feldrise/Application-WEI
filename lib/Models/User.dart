@@ -21,7 +21,7 @@ class User {
   int points = 0;
 
   final List<dynamic> defisToValidate;
-  final List<dynamic> defisValidated;
+  final Map<dynamic, dynamic> defisValidated;
 
   String id;
 

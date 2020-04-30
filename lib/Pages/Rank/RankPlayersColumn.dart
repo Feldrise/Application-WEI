@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
@@ -9,50 +11,106 @@ import 'package:provider/provider.dart';
 class RankPlayersColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('users').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[ 
+        Visibility(
+          visible: Provider.of<ApplicationSettings>(context).loggedUser.role == "admin",
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: RaisedButton(
+              child: const Text('Changer la visibilité du classement', style: TextStyle(color: Colors.white),),
+              color: Theme.of(context).accentColor,
+              onPressed: () async {
+                await _toggleRankVisiblity();
+              },
+            ),
+          ),
+        ),
+        Flexible(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: Firestore.instance.collection('settings').document('application').snapshots(),
+            builder: (context, settings) {
+              if (!settings.hasData) return Center(child: CircularProgressIndicator(),);
 
-        List<DocumentSnapshot> playersSnaphot = [];
+              bool isAdmin = Provider.of<ApplicationSettings>(context).loggedUser.role == "admin";
 
-        for (DocumentSnapshot playerSnapshot in snapshot.data.documents) {
-          // We dont want to show admin and captain on the rank page
-          if (playerSnapshot.data['role'] == 'captain' || playerSnapshot.data['role'] == 'admin') 
-            continue;
+              if (!settings.data['show_players_rank'] && !isAdmin) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(
+                      image: AssetImage("assets/images/logo.png"),
+                      height: 128,
+                    ),
+                    SizedBox(height: 16,),
+                    Text("Le classement des joueurs est caché aux yeux de tous pour l'instant... Reviens plus tard. =P", textAlign: TextAlign.center,)
+                  ],
+                );  
+              }
 
-          playersSnaphot.add(playerSnapshot);
-        }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Visibility(
+                    visible: isAdmin,
+                    child: WeiCard(
+                      child: Text(settings.data['show_players_rank'] ? "Le classement est visible de tous" : "Le classement n'est visible que par les administrateurs"),
+                    ),
+                  ),
+                  Flexible(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: Firestore.instance.collection('users').snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
 
-        // We sort the players
-        playersSnaphot.sort((player1, player2) {
-          if (player1.data['points'] > player2.data['points'])
-            return -1;
-          
-          if (player1.data['points'] < player2.data['points'])
-            return 1;
+                        List<DocumentSnapshot> playersSnaphot = [];
 
-          return 0;
-        });
+                        for (DocumentSnapshot playerSnapshot in snapshot.data.documents) {
+                          // We dont want to show admin and captain on the rank page
+                          if (playerSnapshot.data['role'] == 'captain' || playerSnapshot.data['role'] == 'admin') 
+                            continue;
 
-        if (playersSnaphot.isEmpty) {
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/images/logo.png"),
-                height: 128,
-              ),
-              SizedBox(height: 16,),
-              Text("Il n'y a pas de joueurs à classer pour le moment.")
-            ],
-          );  
-        }
+                          playersSnaphot.add(playerSnapshot);
+                        }
 
-        return _buildList(context, playersSnaphot);
+                        // We sort the players
+                        playersSnaphot.sort((player1, player2) {
+                          if (player1.data['points'] > player2.data['points'])
+                            return -1;
+                          
+                          if (player1.data['points'] < player2.data['points'])
+                            return 1;
 
-      }
+                          return 0;
+                        });
+
+                        if (playersSnaphot.isEmpty) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image(
+                                image: AssetImage("assets/images/logo.png"),
+                                height: 128,
+                              ),
+                              SizedBox(height: 16,),
+                              Text("Il n'y a pas de joueurs à classer pour le moment.")
+                            ],
+                          );  
+                        }
+
+                        return _buildList(context, playersSnaphot);
+
+                      }
+                    )
+                  )
+                ]
+              );
+            },
+          )
+        ),
+      ]
     );
   }
 
@@ -107,5 +165,19 @@ class RankPlayersColumn extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future _toggleRankVisiblity() async {
+    // We check the current state of the visibility
+    Completer completer = new Completer<bool>();
+    Firestore.instance.collection('settings').document('application').snapshots().listen((data) {
+      completer.complete(data.data['show_players_rank']);
+    });
+
+    bool show = await completer.future;
+
+    await Firestore.instance.collection('settings').document('application').updateData({
+      'show_players_rank': !show
+    });
   }
 }

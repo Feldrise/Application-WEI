@@ -1,4 +1,5 @@
 import 'package:appli_wei/Models/Activity.dart';
+import 'package:appli_wei/Models/Team.dart';
 import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Pages/Home/DefiDetailPage.dart';
 import 'package:appli_wei/Pages/Profil/EditDefi.dart';
@@ -6,11 +7,12 @@ import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:flutter/material.dart';
 
 class DefiCard extends StatelessWidget {
-  const DefiCard({Key key, @required this.defi, this.userForDefis, this.isManaged = false}) : super(key: key);
+  const DefiCard({Key key, @required this.defi, this.userForDefi, this.teamForDefi, this.isManaged = false}) : super(key: key);
 
   final Activity defi;
 
-  final User userForDefis;
+  final User userForDefi;
+  final Team teamForDefi;
 
   final bool isManaged;
   
@@ -41,7 +43,7 @@ class DefiCard extends StatelessWidget {
                       print("Défis détails required");
                       await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => DefiDetailPage(defi: defi, userForDefi: userForDefis,)),
+                        MaterialPageRoute(builder: (context) => DefiDetailPage(defi: defi, userForDefi: userForDefi, teamForDefi: teamForDefi,)),
                       );
                     },
                   )

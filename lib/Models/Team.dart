@@ -5,6 +5,7 @@ class Team {
     this.name = '',
     this.captainId = '',
     this.points = 0,
+    this.defisValidated,
     this.id,
   });
 
@@ -14,6 +15,7 @@ class Team {
   bool captainIsAdmin = false;
 
   final int points;
+  final Map<dynamic, dynamic> defisValidated;
 
   String id;
 
@@ -22,14 +24,16 @@ class Team {
   Team.fromMap(Map<String, dynamic> map, {this.id}) :
     name = map['name'],
     captainId = map['captain_id'],
-    points = map['points'];
+    points = map['points'],
+    defisValidated = map['defis_validated'];
 
   /// This allow us to transform the user in Json
   Map<String, dynamic> toJson() {
     return {
       'name': name,
       'captain_id': captainId,
-      'points': points
+      'points': points,
+      'defis_validated': defisValidated
     };
   }
 

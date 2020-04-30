@@ -1,5 +1,6 @@
 import 'package:appli_wei/Models/Activity.dart';
 import 'package:appli_wei/Models/ApplicationSettings.dart';
+import 'package:appli_wei/Models/Team.dart';
 import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,11 +10,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class DefiDetailPage extends StatefulWidget {
-  const DefiDetailPage({Key key, @required this.defi, this.userForDefi}) : super(key: key);
+  const DefiDetailPage({Key key, @required this.defi, this.userForDefi, this.teamForDefi}) : super(key: key);
 
   final Activity defi;
 
   final User userForDefi;
+  final Team teamForDefi;
   
   DefiDetailPageState createState() => DefiDetailPageState();
 }
@@ -30,7 +32,7 @@ class DefiDetailPageState extends State<DefiDetailPage> {
       return "défi en cours de validation";
     }
 
-    return "défi à faire";
+    return "défi à faire encore ${widget.defi.numberOfRepetition - widget.defi.userRepetition} fois(s)";
   }
 
   @override
@@ -92,7 +94,7 @@ class DefiDetailPageState extends State<DefiDetailPage> {
                   child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
                     child: const Text('Valider le défis', style: TextStyle(color: Colors.white),),
                     color: Theme.of(context).accentColor,
-                    onPressed: _validateDefis,
+                    onPressed: widget.defi.validatedByUser ? null : _validateDefis,
                   ),
                 ),
               ),
@@ -187,18 +189,12 @@ class DefiDetailPageState extends State<DefiDetailPage> {
   Future _validateDefis() async {
     widget.userForDefi.defisToValidate.remove(widget.defi.id);
 
-    if (!widget.defi.isRepetable) {
-      widget.userForDefi.defisValidated.add(widget.defi.id);
-    }
+    widget.userForDefi.defisValidated[widget.defi.id] = widget.defi.userRepetition + 1;
 
-    // We update list in the user fiels
+    // We update list in the user fiels and add the points for user
     Firestore.instance.collection("users").document(widget.userForDefi.id).updateData({
       'defis_to_validate': widget.userForDefi.defisToValidate,
-      'defis_validated': widget.userForDefi.defisValidated
-    });
-
-    // We add the points to the user
-    Firestore.instance.collection("users").document(widget.userForDefi.id).updateData({
+      'defis_validated': widget.userForDefi.defisValidated,
       'points': FieldValue.increment(widget.defi.value)
     });
 
@@ -206,6 +202,15 @@ class DefiDetailPageState extends State<DefiDetailPage> {
     Firestore.instance.collection("teams").document(widget.userForDefi.teamId).updateData({
       'points': FieldValue.increment(widget.defi.value)
     });
+
+    // If it's a team challenge we add it in the validated team challengs
+    if (widget.defi.isForTeam) {
+      widget.teamForDefi.defisValidated[widget.defi.id] = widget.defi.userRepetition + 1;
+
+      Firestore.instance.collection("teams").document(widget.userForDefi.teamId).updateData({
+        'defis_validated': widget.teamForDefi.defisValidated
+      });
+    }
 
     Navigator.of(context).pop();
   }
