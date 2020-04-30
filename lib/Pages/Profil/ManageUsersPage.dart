@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Pages/Profil/ChangeTeamDialog.dart';
+import 'package:appli_wei/Pages/Profil/ChangeUserPointsDialog.dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -87,6 +88,12 @@ class ManageUsersPage extends StatelessWidget {
                   onPressed: () async {
                     await _changeUserTeam(context, user);
                   },
+                ),
+                FlatButton(
+                  child: Text("Ajouter/enlever des points à cet utilisateur", style: TextStyle(color: Theme.of(context).accentColor),),
+                  onPressed: () async {
+                    await _changeUserPoints(context, user);
+                  },
                 )
               ],
             ),
@@ -101,6 +108,15 @@ class ManageUsersPage extends StatelessWidget {
       context: context,
       builder: (BuildContext  context) {
         return ChangeTeamDialog(user: user,);
+      }
+    );
+  }
+
+  Future _changeUserPoints(BuildContext context, User user) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext  context) {
+        return ChangeUserPointsDialog(user: user,);
       }
     );
   }

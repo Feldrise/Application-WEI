@@ -1,4 +1,5 @@
 import 'package:appli_wei/Models/Team.dart';
+import 'package:appli_wei/Pages/Profil/ChangeTeamPointsDialog.dart';
 import 'package:appli_wei/Pages/Profil/EditTeam.Dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
@@ -103,12 +104,26 @@ class ManageTeamsPage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => EditTeam(team: team,)),
                     );
                   },
+                ),
+                FlatButton(
+                  child: Text("Ajouter/enlever des points à cet équipe", style: TextStyle(color: Theme.of(context).accentColor),),
+                  onPressed: () async {
+                    await _changeTeamPoints(context, team);
+                  },
                 )
               ],
             ),
           )
         ],
       ),
+    );
+  }
+  Future _changeTeamPoints(BuildContext context, Team team) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext  context) {
+        return ChangeTeamPointsDialog(team: team,);
+      }
     );
   }
 }
