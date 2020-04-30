@@ -1,8 +1,11 @@
 import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:appli_wei/Models/User.dart';
+import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 /** 
@@ -40,22 +43,7 @@ class ProfilPageState extends State<ProfilPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start, 
                     children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8),
-                        height: 92,
-                        width: 92,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(46),
-                          color: Colors.black,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(46),
-                          child: Image(
-                            image: AssetImage('assets/images/logo_white.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                      Avatar(path: 'avatars/${appliationSettings.loggedUser.id}',),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,6 +89,38 @@ class ProfilPageState extends State<ProfilPage> {
                           onPressed: () async {
                             await Provider.of<ApplicationSettings>(context, listen: false).disconnect();
                           },
+                        ),
+                        Visibility(
+                          visible: (appliationSettings.loggedUser.role == 'captain' || appliationSettings.loggedUser.role == 'admin') && (appliationSettings.loggedUser.teamId != null || appliationSettings.loggedUser.teamId.isEmpty),
+                          child: RaisedButton(
+                            child: const Text("Changer l'avatar de mon équipe", style: TextStyle(color: Colors.white),),
+                            color: Theme.of(context).accentColor,
+                            onPressed: () async {
+                              await _updateTeamPicture(appliationSettings.loggedUser.teamId);
+                            },
+                          ),
+                        ),
+                        Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Expanded(
+                                child: RaisedButton(
+                                  child: const Text('Changer la photo de profil', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+                                  color: Theme.of(context).accentColor,
+                                  onPressed: () async {
+                                    await _updateProfilePicture(appliationSettings.loggedUser.id);
+                                  },
+                                ),
+                              ),
+                              SizedBox(width: 4,),
+                              Expanded(
+                                child: RaisedButton(
+                                  child: const Text('Changer son mot de passe', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+                                  color: Theme.of(context).accentColor,
+                                  onPressed: null
+                                ),
+                              )
+                            ]
                         ),
                         Visibility(
                           visible: currentUser.role == "admin",
@@ -152,5 +172,35 @@ class ProfilPageState extends State<ProfilPage> {
         );
       },
     );
+  }
+
+  Future _updateProfilePicture(String userId) async {
+    // First we get the image
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) async {    
+      if (image != null) {
+        StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/$userId');    
+        StorageUploadTask uploadTask = storageReference.putFile(image);    
+        await uploadTask.onComplete;  
+          
+        print('Avatar Uploaded');    
+        
+        setState(() {});  
+      }    
+    });
+  }
+
+   Future _updateTeamPicture(String teamId) async {
+    // First we get the image
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) async {    
+      if (image != null) {
+        StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${teamId}');    
+        StorageUploadTask uploadTask = storageReference.putFile(image);    
+        await uploadTask.onComplete;  
+          
+        print('Avatar Uploaded');    
+        
+        setState(() {});  
+      }    
+    });
   }
 }

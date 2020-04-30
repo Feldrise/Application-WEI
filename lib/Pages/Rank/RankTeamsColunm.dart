@@ -1,6 +1,6 @@
 import 'package:appli_wei/Models/ApplicationSettings.dart';
 import 'package:appli_wei/Models/Team.dart';
-import 'package:appli_wei/Models/User.dart';
+import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -74,18 +74,7 @@ class RankTeamsColumn extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(32),
-            child: Container(
-              color: Colors.black87,
-              child: Image(
-                image: AssetImage('assets/images/logo_white.png'),
-                height: 64,
-                width: 64,
-                fit: BoxFit.fitHeight,
-              ),
-            ),
-          ),
+          Avatar(path: 'avatars/teams/${team.id}', size: 64,),
           SizedBox(width: 8,),
           Expanded(
             flex: 7,

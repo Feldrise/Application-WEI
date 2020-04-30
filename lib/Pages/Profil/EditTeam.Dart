@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:appli_wei/Models/Team.dart';
 import 'package:appli_wei/Models/User.dart';
+import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditTeam extends StatefulWidget {
   const EditTeam({Key key, @required this.team}) : super(key: key);
@@ -47,6 +50,7 @@ class EditTeamState extends State<EditTeam> {
                   margin: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
                   child: Column(
                     children: <Widget>[
+                      Center(child: Avatar(path: 'avatars/teams/${widget.team.id}', backgroundColor: Theme.of(context).accentColor,),),
                       TextFormField(
                         initialValue: widget.team.name,
                         decoration: InputDecoration(labelText: "Nom de l'équipe"),
@@ -79,7 +83,15 @@ class EditTeamState extends State<EditTeam> {
                     ],
                   ),
                 ),
-               
+               RaisedButton(
+                  child: const Text("Importer un avatar", style: TextStyle(color: Colors.white),),
+                  color: Theme.of(context).accentColor,
+                  onPressed: () async {
+                    print("upload team picture");
+                    
+                    await _updateTeamPicture();
+                  },
+                ),
                 Visibility(
                   visible: widget.team.id != null,
                   child: RaisedButton(
@@ -234,5 +246,20 @@ class EditTeamState extends State<EditTeam> {
         );
       }
     );
+  }
+  
+  Future _updateTeamPicture() async {
+    // First we get the image
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) async {    
+      if (image != null) {
+        StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${widget.team.id}');    
+        StorageUploadTask uploadTask = storageReference.putFile(image);    
+        await uploadTask.onComplete;  
+          
+        print('Avatar Uploaded');    
+        
+        setState(() {});  
+      }    
+    });
   }
 }

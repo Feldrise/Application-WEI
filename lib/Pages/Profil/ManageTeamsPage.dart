@@ -1,5 +1,6 @@
 import 'package:appli_wei/Models/Team.dart';
 import 'package:appli_wei/Pages/Profil/EditTeam.Dart';
+import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -64,18 +65,7 @@ class ManageTeamsPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(46),
-            child: Container(
-              color: Theme.of(context).accentColor,
-              child: Image(
-                image: AssetImage('assets/images/logo_white.png'),
-                height: 92,
-                width: 92,
-                fit: BoxFit.fitHeight,
-              ),
-            ),
-          ),
+          Avatar(path: 'avatars/teams/${team.id}', backgroundColor: Theme.of(context).accentColor,),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
