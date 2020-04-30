@@ -250,16 +250,16 @@ class EditTeamState extends State<EditTeam> {
   
   Future _updateTeamPicture() async {
     // First we get the image
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) async {    
-      if (image != null) {
-        StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${widget.team.id}');    
-        StorageUploadTask uploadTask = storageReference.putFile(image);    
-        await uploadTask.onComplete;  
-          
-        print('Avatar Uploaded');    
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    
+    if (image != null) {
+      StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${widget.team.id}');    
+      StorageUploadTask uploadTask = storageReference.putFile(image);    
+      await uploadTask.onComplete;  
         
-        setState(() {});  
-      }    
-    });
+      print('Avatar Uploaded');    
+      
+      setState(() {});  
+    }  
   }
 }

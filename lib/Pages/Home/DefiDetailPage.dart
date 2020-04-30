@@ -109,7 +109,9 @@ class DefiDetailPageState extends State<DefiDetailPage> {
     }
 
     // First we get the image
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) async {    
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
       if (image != null) {
         setState(() {
           _uploadingProof = true;
@@ -131,7 +133,7 @@ class DefiDetailPageState extends State<DefiDetailPage> {
           widget.defi.pendingValidation = true;
         });  
       }    
-    });
+    }
   }
 
   Future<Widget> _getProofImage(BuildContext context) async {

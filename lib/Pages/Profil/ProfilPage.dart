@@ -176,31 +176,31 @@ class ProfilPageState extends State<ProfilPage> {
 
   Future _updateProfilePicture(String userId) async {
     // First we get the image
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) async {    
-      if (image != null) {
-        StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/$userId');    
-        StorageUploadTask uploadTask = storageReference.putFile(image);    
-        await uploadTask.onComplete;  
-          
-        print('Avatar Uploaded');    
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/$userId');    
+      StorageUploadTask uploadTask = storageReference.putFile(image);    
+      await uploadTask.onComplete;  
         
-        setState(() {});  
-      }    
-    });
+      print('Avatar Uploaded');    
+      
+      setState(() {});  
+    }  
   }
 
    Future _updateTeamPicture(String teamId) async {
     // First we get the image
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) async {    
-      if (image != null) {
-        StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${teamId}');    
-        StorageUploadTask uploadTask = storageReference.putFile(image);    
-        await uploadTask.onComplete;  
-          
-        print('Avatar Uploaded');    
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${teamId}');    
+      StorageUploadTask uploadTask = storageReference.putFile(image);    
+      await uploadTask.onComplete;  
         
-        setState(() {});  
-      }    
-    });
+      print('Avatar Uploaded');    
+      
+      setState(() {});  
+    }    
   }
 }
