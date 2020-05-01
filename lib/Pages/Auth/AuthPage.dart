@@ -1,9 +1,12 @@
 import 'package:appli_wei/Pages/Auth/LoginPage.dart';
-import 'package:appli_wei/Pages/Auth/SignUpPage.dart';
+import 'package:appli_wei/Pages/Auth/RegisterPage.dart';
 import 'package:appli_wei/Widgets/WeiTitle.dart';
 import 'package:flutter/material.dart';
 
+/// This is the first page of the application. Here the user
+/// have the choice between register himself or login
 class AuthPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,22 +28,12 @@ class AuthPage extends StatelessWidget {
                     RaisedButton(
                       child: const Text('Se connecter', style: TextStyle(color: Colors.white),),
                       color: Theme.of(context).accentColor,
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      },
+                      onPressed: () async => await _loginClicked(context),
                     ),
                     RaisedButton(
                       child: const Text('S\'inscrire', style: TextStyle(color: Colors.white),),
                       color: Theme.of(context).accentColor,
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RegisterPage()),
-                        );
-                      },
+                      onPressed: () async => await _registerClicked(context),
                     ),
                   ],
                 ),
@@ -49,6 +42,22 @@ class AuthPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// We simply navigate to the login page from the [context]
+  Future _loginClicked(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
+  /// We simply navigate to the register page from the [context]
+  Future _registerClicked(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegisterPage()),
     );
   }
 }

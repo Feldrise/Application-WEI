@@ -8,19 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-/** 
- * Cette page affiche les infos de l'utilisateurs 
- * et quelques jolies stats.
- */
+/// This page shows every informations for the current
+/// player. It also shows some control button (like 
+/// change profil picture, etc.) and the access to 
+/// managment pannels for administrateur
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key key, @required this.onPush}) : super(key: key);
   
   final ValueChanged<String> onPush;
 
-  ProfilPageState createState() => ProfilPageState();
+  @override
+  _ProfilPageState createState() => _ProfilPageState();
 }
 
-class ProfilPageState extends State<ProfilPage> {
+class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationSettings>(
@@ -36,6 +37,9 @@ class ProfilPageState extends State<ProfilPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                // The main bar of the profil page
+                // It show the avatar, the name and 
+                // the team
                 Container(
                   color: Theme.of(context).accentColor,
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -44,11 +48,13 @@ class ProfilPageState extends State<ProfilPage> {
                     mainAxisAlignment: MainAxisAlignment.start, 
                     children: <Widget>[
                       Avatar(path: 'avatars/${appliationSettings.loggedUser.id}',),
+                      
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text("${currentUser.firstName} ${currentUser.secondName}", style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: Colors.white)),),
+                            
                             currentUser.teamId != null
                             ? StreamBuilder<DocumentSnapshot>(
                               stream: Firestore.instance.collection("teams").document(currentUser.teamId).snapshots(),
@@ -65,6 +71,8 @@ class ProfilPageState extends State<ProfilPage> {
                     ],
                   ),
                 ),
+                
+                // The main section of the page
                 Flexible(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -73,6 +81,7 @@ class ProfilPageState extends State<ProfilPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
+                        // The user's number of points
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,6 +92,8 @@ class ProfilPageState extends State<ProfilPage> {
                             ],
                           ),
                         ),
+
+                        // A deconnection button
                         RaisedButton(
                           child: const Text('Déconnexion', style: TextStyle(color: Colors.white),),
                           color: Theme.of(context).accentColor,
@@ -90,6 +101,9 @@ class ProfilPageState extends State<ProfilPage> {
                             await Provider.of<AuthService>(context, listen: false).disconnect(context);
                           },
                         ),
+
+                        // A "change team profil picture" 
+                        // Only visible for captains and admin
                         Visibility(
                           visible: (appliationSettings.loggedUser.role == 'captain' || appliationSettings.loggedUser.role == 'admin') && (appliationSettings.loggedUser.teamId != null || appliationSettings.loggedUser.teamId.isEmpty),
                           child: RaisedButton(
@@ -100,6 +114,9 @@ class ProfilPageState extends State<ProfilPage> {
                             },
                           ),
                         ),
+
+                        // The basic controls (change profil picture
+                        // and reset password)
                         Row(
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
@@ -122,6 +139,11 @@ class ProfilPageState extends State<ProfilPage> {
                               )
                             ]
                         ),
+
+                        // The admin control row. Gives access to
+                        // - the challenges manage page
+                        // - the teams manage page
+                        // - the users manage page
                         Visibility(
                           visible: currentUser.role == "admin",
                           child: Row(
@@ -132,7 +154,6 @@ class ProfilPageState extends State<ProfilPage> {
                                   child: const Text('Gérer les défis', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
-                                    print("Manage defis");
                                     widget.onPush("manageDefis");
                                   },
                                 ),
@@ -143,7 +164,6 @@ class ProfilPageState extends State<ProfilPage> {
                                   child: const Text('Gérer les joueurs', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
-                                    print("Manage teams");
                                     widget.onPush("manageUsers");
                                   },
                                 ),
@@ -154,7 +174,6 @@ class ProfilPageState extends State<ProfilPage> {
                                   child: const Text('Gérer les équipes', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
-                                    print("Manage teams");
                                     widget.onPush("manageTeams");
                                   },
                                 ),
@@ -174,32 +193,29 @@ class ProfilPageState extends State<ProfilPage> {
     );
   }
 
+  /// The function upload profil picture to Firebase for the [userId]
   Future _updateProfilePicture(String userId) async {
-    // First we get the image
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/$userId');    
       StorageUploadTask uploadTask = storageReference.putFile(image);    
       await uploadTask.onComplete;  
-        
-      print('Avatar Uploaded');    
-      
+              
       setState(() {});  
     }  
   }
 
-   Future _updateTeamPicture(String teamId) async {
-    // First we get the image
+
+  /// The function upload profil picture to Firebase for the [teamId]
+  Future _updateTeamPicture(String teamId) async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-      StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${teamId}');    
+      StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/$teamId');    
       StorageUploadTask uploadTask = storageReference.putFile(image);    
       await uploadTask.onComplete;  
-        
-      print('Avatar Uploaded');    
-      
+              
       setState(() {});  
     }    
   }

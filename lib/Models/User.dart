@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// This class represent a user. We get them from Firebase 
+/// in the "users" collection
 class User {
   User({
     this.firstName,
@@ -7,8 +9,8 @@ class User {
     this.email,
     this.role,
     this.teamId,
-    this.defisToValidate,
-    this.defisValidated,
+    this.challengesToValidate,
+    this.challengesValidated,
     this.id,
   });
 
@@ -20,8 +22,8 @@ class User {
   final String teamId;
   int points = 0;
 
-  final List<dynamic> defisToValidate;
-  final Map<dynamic, dynamic> defisValidated;
+  final List<dynamic> challengesToValidate;
+  final Map<dynamic, dynamic> challengesValidated;
 
   String id;
 
@@ -34,10 +36,11 @@ class User {
     role = map['role'],
     teamId = map['team_id'],
     points = map['points'],
-    defisToValidate = map['defis_to_validate'],
-    defisValidated = map['defis_validated'];
+    challengesToValidate = map['defis_to_validate'],
+    challengesValidated = map['defis_validated'];
 
-  /// This allow us to transform the user in Json
+  /// This is use to return a Json object with the 
+  /// current data
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -47,8 +50,8 @@ class User {
       'role': role,
       'team_id': teamId,
       'points': points,
-      'defis_to_validate': defisToValidate,
-      'defis_validated': defisValidated
+      'defis_to_validate': challengesToValidate,
+      'defis_validated': challengesValidated
     };
   }
 
@@ -57,7 +60,14 @@ class User {
 
   ///This function update the user on Firebase
   Future update() async {
-    Firestore.instance.collection("users").document(id).setData(toJson());
+    await Firestore.instance.collection("users").document(id).setData(toJson());
+  }
+
+  /// This function update only some date for the user on Firebase
+  Future updateData(Map<String, dynamic> data) async {
+    assert(id != null && id.isNotEmpty);
+    
+    await Firestore.instance.collection("users").document(id).updateData(data);
   }
 
 }

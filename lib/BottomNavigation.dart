@@ -20,8 +20,7 @@ Map<TabItem, int> tabIndex = {
   TabItem.profil: 2
 };
 
-
-
+/// This is the bottom navigation bar of the application
 class BottomNavigation extends StatelessWidget {
   BottomNavigation({this.currentTab, this.onSelectTab});
 
@@ -59,7 +58,8 @@ class BottomNavigation extends StatelessWidget {
     );
   }
 
-  /// We simply return the corresponding BottomNavigationBarItem to the [tabItem]
+  /// This function take a [context] and a [tabItem] to return the 
+  /// corresponding widget
   BottomNavigationBarItem _buildItem(BuildContext context, {TabItem tabItem}) {
     String text = tabName[tabItem];
     IconData icon = tabIcon[tabItem];

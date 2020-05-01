@@ -3,10 +3,8 @@ import 'package:appli_wei/BottomNavigation.dart';
 import 'package:appli_wei/TabNavigator.dart';
 import 'package:flutter/material.dart';
 
-/**
- * This is simply the main page of our application. This page
- * is in charge to switch pages from the bottom navigation bar.
- */
+/// This is simply the main page of our application. This page
+/// is in charge to switch pages from the bottom navigation bar.
 class MainPage extends StatefulWidget {
   MainPageState createState() => MainPageState();
 }
@@ -41,6 +39,7 @@ class MainPageState extends State<MainPage> {
           if (_currentTab != TabItem.home) {
             // select 'main' tab
             _selectTab(TabItem.home);
+            
             // back button handled by app
             return false;
           }

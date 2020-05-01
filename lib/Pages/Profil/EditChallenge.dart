@@ -1,19 +1,21 @@
-import 'package:appli_wei/Models/Activity.dart';
+import 'package:appli_wei/Models/Challenge.dart';
 import 'package:appli_wei/Widgets/CheckBoxFormField.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class EditDefi extends StatefulWidget {
-  const EditDefi({Key key, @required this.defi}) : super(key: key);
+/// This is a form to update a challenge
+class EditChallenge extends StatefulWidget {
+  const EditChallenge({Key key, @required this.challenge}) : super(key: key);
   
-  final Activity defi;
+  final Challenge challenge;
    
-  EditDefiState createState() => EditDefiState();
+   @override 
+  _EditChallengeState createState() => _EditChallengeState();
 }
 
-class EditDefiState extends State<EditDefi> {
+class _EditChallengeState extends State<EditChallenge> {
   final _formKey = GlobalKey<FormState>();
 
   bool _updating = false;
@@ -37,9 +39,9 @@ class EditDefiState extends State<EditDefi> {
                   margin: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
                   child: Column(
                     children: <Widget>[
-                      widget.defi.imageUrl.isNotEmpty
+                      widget.challenge.imageUrl.isNotEmpty
                       ? Image.network(
-                        widget.defi.imageUrl,
+                        widget.challenge.imageUrl,
                         fit: BoxFit.fitWidth,
                       )
                       : Image(
@@ -47,7 +49,7 @@ class EditDefiState extends State<EditDefi> {
                         height: 128,
                       ),
                       TextFormField(
-                        initialValue: widget.defi.imageUrl,
+                        initialValue: widget.challenge.imageUrl,
                         decoration: InputDecoration(labelText: "Url de l'image"),
                         validator: (value) {
                           if (value.isEmpty) {
@@ -56,10 +58,10 @@ class EditDefiState extends State<EditDefi> {
 
                           return null;
                         },
-                        onSaved: (value) => widget.defi.imageUrl = value,
+                        onSaved: (value) => widget.challenge.imageUrl = value,
                       ),
                       TextFormField(
-                        initialValue: widget.defi.name,
+                        initialValue: widget.challenge.name,
                         decoration: InputDecoration(labelText: "Nom"),
                         validator: (value) {
                           if (value.isEmpty) {
@@ -68,10 +70,10 @@ class EditDefiState extends State<EditDefi> {
 
                           return null;
                         },
-                        onSaved: (value) => widget.defi.name = value,
+                        onSaved: (value) => widget.challenge.name = value,
                       ),
                       TextFormField(
-                        initialValue: widget.defi.description,
+                        initialValue: widget.challenge.description,
                         maxLines: 5,
                         keyboardType: TextInputType.multiline,
                         decoration: InputDecoration(labelText: "Description"),
@@ -82,14 +84,14 @@ class EditDefiState extends State<EditDefi> {
 
                           return null;
                         },
-                        onSaved: (value) => widget.defi.description = value,
+                        onSaved: (value) => widget.challenge.description = value,
                       ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                             WhitelistingTextInputFormatter.digitsOnly
                         ],
-                        initialValue: widget.defi.value.toString(),
+                        initialValue: widget.challenge.value.toString(),
                         decoration: InputDecoration(labelText: "Nombre de point du défi"),
                         validator: (value) {
                           if (value.isEmpty) {
@@ -98,14 +100,14 @@ class EditDefiState extends State<EditDefi> {
 
                           return null;
                         },
-                        onSaved: (value) => widget.defi.value = num.tryParse(value)
+                        onSaved: (value) => widget.challenge.value = num.tryParse(value)
                       ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                             WhitelistingTextInputFormatter.digitsOnly
                         ],
-                        initialValue: widget.defi.numberOfRepetition.toString(),
+                        initialValue: widget.challenge.numberOfRepetition.toString(),
                         decoration: InputDecoration(labelText: "Nombre de fois que le défi doit être réalisé"),
                         validator: (value) {
                           if (value.isEmpty) {
@@ -114,41 +116,45 @@ class EditDefiState extends State<EditDefi> {
 
                           return null;
                         },
-                        onSaved: (value) => widget.defi.numberOfRepetition = num.tryParse(value)
+                        onSaved: (value) => widget.challenge.numberOfRepetition = num.tryParse(value)
                       ),
                     ],
                   ),
                 ),
+
                 WeiCard(
                   margin: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
                   child: Column(
                     children: <Widget>[
                       CheckboxFormField(
                         context: context,
-                        initialValue: widget.defi.isForTeam,
+                        initialValue: widget.challenge.isForTeam,
                         title: Text("Ce défi est un défi d'équipe"),
-                        onSaved: (value) => widget.defi.isForTeam = value,
+                        onSaved: (value) => widget.challenge.isForTeam = value,
                       ),
                       CheckboxFormField(
                         context: context,
-                        initialValue: widget.defi.isVisible,
+                        initialValue: widget.challenge.isVisible,
                         title: Text("Ce défi est visible"),
-                        onSaved: (value) => widget.defi.isVisible = value,
+                        onSaved: (value) => widget.challenge.isVisible = value,
                       )
                     ]
                   )
                 ),
+                
+                // We only show remove button for existing challenge
                 Visibility(
-                  visible: widget.defi.id != null,
-                  child: RaisedButton(
-                    child: const Text('Supprimer le défi...', style: TextStyle(color: Colors.white),),
-                    color: Theme.of(context).accentColor,
-                    onPressed: () async {
-                      print("Delete defi");
-                      
-                      await _deleteDefi();
-                      Navigator.of(context).pop();
-                    },
+                  visible: widget.challenge.id != null,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: RaisedButton(
+                      child: const Text('Supprimer le défi...', style: TextStyle(color: Colors.white),),
+                      color: Theme.of(context).accentColor,
+                      onPressed: () async {                    
+                        await _deleteChallenge();
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 )
               ],
@@ -161,16 +167,15 @@ class EditDefiState extends State<EditDefi> {
         child: Icon(Icons.check, color: Colors.white,),
         backgroundColor: Colors.green,
         onPressed: () async {
-          print("Save the defi");
-
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
             
+            // We update the UI to show the progress indicator
             setState(() {
               _updating = true;
             });
 
-            await _saveDefiToFirebase();
+            await _saveChallengeToFirebase();
             
             Navigator.of(context).pop(true);
           }
@@ -179,18 +184,20 @@ class EditDefiState extends State<EditDefi> {
     );
   }
 
-  Future _saveDefiToFirebase() async {
-    CollectionReference defisCollectionReference = Firestore.instance.collection("activities");
-
-    if (widget.defi.id == null) {
-      await defisCollectionReference.add(widget.defi.toJson());
+  /// This function save the challenge to Firebase
+  Future _saveChallengeToFirebase() async {
+    if (widget.challenge.id == null) {
+      await Firestore.instance.collection("activities").add(widget.challenge.toJson());
     }
     else {
-      await defisCollectionReference.document(widget.defi.id).setData(widget.defi.toJson());
+      await widget.challenge.update();
     }
   }
 
-  Future _deleteDefi() async {
+  /// This function show a dialog and then delete the challenge from Firebase
+  Future _deleteChallenge() async {
+
+    // We want the user to be sure...
     await showDialog(
       context: context,
       builder: (BuildContext  context) {
@@ -204,16 +211,16 @@ class EditDefiState extends State<EditDefi> {
                 Navigator.of(context).pop();
               },
             ),
+
             FlatButton(
               child: Text("Oui", style: TextStyle(color: Theme.of(context).accentColor),),
               onPressed: () async {
+                // We update the UI to show the progress indicator
                 setState(() {
                   _updating = true;
                 });
 
-                CollectionReference defisCollectionReference = Firestore.instance.collection("activities");
-                
-                await defisCollectionReference.document(widget.defi.id).delete();
+                await Firestore.instance.collection("activities").document(widget.challenge.id).delete();
                 
                 Navigator.of(context).pop();
               },

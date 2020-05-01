@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
+    // Since we need authentification at the app startup, the provider comes 
+    // at the creation of the app widget
     ChangeNotifierProvider<AuthService>(
       child: MyApp(),
       create: (context) => AuthService(),
@@ -15,6 +17,8 @@ void main() {
   );
 }
 
+/// This is the main widget of the application. It provides the ChangeNotifierProvider
+/// for the appliation settings 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -23,50 +27,54 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => new ApplicationSettings(),),
       ],
-      child: MaterialApp(
-        title: 'Appli du WEI',
-        theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
+      // The gesture dectector allows us to "unfocus" and remove keyboard on tap on the screen
+      child: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
 
-          primaryColor: Color(0xfff70c36),
-          accentColor: Color(0xfff70c36),
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: MaterialApp(
+          title: 'Appli du WEI',
+          theme: ThemeData(
+            scaffoldBackgroundColor: Colors.white,
 
-          appBarTheme: AppBarTheme(
-            color:  Color(0xfff70c36),
-            // textTheme: Theme.of(context).textTheme,
-            elevation: 0,
+            primaryColor: Color(0xfff70c36), // These are the color of the ISATI
+            accentColor: Color(0xfff70c36),
+
+            appBarTheme: AppBarTheme(
+              color:  Color(0xfff70c36),
+              elevation: 0,
+            ),
+
+            textTheme: TextTheme(
+              title: TextStyle(fontSize: 38.0, fontWeight: FontWeight.w500, color: Colors.black87),
+              subtitle: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300, color: Colors.black87),
+            ),
           ),
-
-          textTheme: TextTheme(
-            title: TextStyle(fontSize: 38.0, fontWeight: FontWeight.w500, color: Colors.black87),
-            // subtitle: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w200, color: Colors.black87),
-            // headline: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.black87),
-            // subhead: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300, color: Colors.black87),
-            // body1: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.black87),
-            // body2: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.black87),
-            // caption: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.black87)
+          home: FutureBuilder(
+            // We need to get the logged user object
+            future: Provider.of<AuthService>(context).getUser(),
+            // wait for the future to resolve and render the appropriate
+            // widget for HomePage or AuthPage
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  // If we have a logged user, we put it on the application settings
+                  Provider.of<ApplicationSettings>(context, listen: false).loggedUser = snapshot.data;
+                  return MainPage(); 
+                } 
+                
+                return AuthPage();
+              } else {
+                return SplashScreen();
+              }
+            },
           ),
-        ),
-        home: FutureBuilder(
-          // get the Provider, and call the getUser method
-          future: Provider.of<AuthService>(context).getUser(),
-          // wait for the future to resolve and render the appropriate
-          // widget for HomePage or LoginPage
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasData) {
-                Provider.of<ApplicationSettings>(context, listen: false).loggedUser = snapshot.data;
-                return MainPage(); 
-              } 
-              
-              return AuthPage();
-            } else {
-              return SplashScreen();
-            }
-          },
-        ),
-        // home: (applicationSettings.loggedUser == null) ? AuthPage() : MainPage(),
-      )
+        )
+      ),
     );
   }
 }

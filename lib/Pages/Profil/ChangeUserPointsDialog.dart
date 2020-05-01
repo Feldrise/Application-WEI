@@ -3,15 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// This dialog show a field with to add or remove
+/// points for the given [user]
 class ChangeUserPointsDialog extends StatefulWidget {
   const ChangeUserPointsDialog({Key key, @required this.user}) : super(key: key);
 
   final User user;
 
-  ChangeUserPointsDialogState createState() => ChangeUserPointsDialogState();
+  @override
+  _ChangeUserPointsDialogState createState() => _ChangeUserPointsDialogState();
 }
 
-class ChangeUserPointsDialogState extends State<ChangeUserPointsDialog> {
+class _ChangeUserPointsDialogState extends State<ChangeUserPointsDialog> {
   final _formKey = GlobalKey<FormState>();
 
   int _pointsToAdd = 0;
@@ -62,8 +65,9 @@ class ChangeUserPointsDialogState extends State<ChangeUserPointsDialog> {
     );
   }
 
+  /// Save the [user] with his new points
   Future _saveUserPoints(User user) async {
-    await Firestore.instance.collection('users').document(user.id).updateData({
+    await user.updateData({
       "points": FieldValue.increment(_pointsToAdd)
     });
   }

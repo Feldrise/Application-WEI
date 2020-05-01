@@ -1,17 +1,26 @@
 
-import 'package:appli_wei/Helper/AuthHelper.dart';
 import 'package:appli_wei/Models/User.dart';
+import 'package:appli_wei/Models/AuthService.Dart';
 import 'package:appli_wei/Widgets/TextInput.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:appli_wei/Widgets/WeiTitle.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+/// This page allows the user to register. We get these information :
+///  - A first name
+///  - A second name
+///  - An email adress
+///  - A password
+/// 
+/// By default, when a user signup he get the "player" role and has no team.
 class RegisterPage extends StatefulWidget {
+
   @override
-  State<StatefulWidget> createState() => RegisterPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -41,6 +50,7 @@ class RegisterPageState extends State<RegisterPage> {
                   inputType: TextInputType.emailAddress,
                   inputDecoration: const InputDecoration(labelText: 'Email'),
                   validator: (String value) {
+                    // TODO: check if mail is from university of Rennes 1
                     // if (value.isEmpty || value.contains("etudiant.univ-rennes1.fr")) {
                     if (value.isEmpty) {
                       return 'Veuillez rentrer une adresse mail étudante';
@@ -62,7 +72,6 @@ class RegisterPageState extends State<RegisterPage> {
                   controller: _secondNameController,
                   inputDecoration: const InputDecoration(labelText: 'Nom'),
                   validator: (String value) {
-                    // if (value.isEmpty || value.contains("etudiant.univ-rennes1.fr")) {
                     if (value.isEmpty) {
                       return 'Veuillez rentrer votre nom';
                     }
@@ -86,7 +95,14 @@ class RegisterPageState extends State<RegisterPage> {
                     color: Theme.of(context).accentColor,
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        _register();
+                        // We wan't to remove keyboard when it's clicked
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                        
+                        await _register();
                       }
                     },
                   ),
@@ -114,22 +130,26 @@ class RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  // Example code for registration.
-  void _register() async {
+  /// We register the user to Firebase using the Auth
+  /// service
+  Future _register() async {
     User toRegister = User(
       firstName: _firstNameController.text,
       secondName: _secondNameController.text,
       email: _emailController.text,
       role: "player",
-      defisToValidate: [],
-      defisValidated: {}
+      challengesToValidate: [],
+      challengesValidated: {}
     );
     
+    // We need to notify the state that we are 
+    // doing work in background to show the progress
+    // indicator
     setState(() {
       _loading = true;
     });
 
-    _statusMessage = await AuthHelper.instance.registerUser(toRegister, _passwordController.text);
+    _statusMessage = await Provider.of<AuthService>(context, listen: false).registerUser(toRegister, _passwordController.text);
     
     setState(() {
       _loading = false;

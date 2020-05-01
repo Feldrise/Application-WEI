@@ -15,21 +15,17 @@ Map<RankTabItem, int> rankTabIndex = {
   RankTabItem.teams: 1
 };
 
-/** 
- * Cette page affiche le classement
- * Elle doit donc récupérer 
- *  - La liste des utilisateurs triés par points
- *  - La liste des équipes triés par points
- */
+/// This is the rank page of the application. It conciste in
+/// two tabs, one for players rank and one for teams rank
 class RanksPage extends StatefulWidget {
   const RanksPage({Key key, @required this.onPush}) : super(key: key);
   
   final ValueChanged<String> onPush;
 
-  RanksPageState createState() => RanksPageState();
+  _RanksPageState createState() => _RanksPageState();
 }
 
-class RanksPageState extends State<RanksPage> with SingleTickerProviderStateMixin {
+class _RanksPageState extends State<RanksPage> with SingleTickerProviderStateMixin {
  TabController _tabController;
 
   void _tabChanged() {

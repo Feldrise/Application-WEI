@@ -1,12 +1,11 @@
 import 'package:appli_wei/Models/ApplicationSettings.dart';
-import 'package:appli_wei/Pages/Home/DefisCaptainColunm.dart';
-import 'package:appli_wei/Pages/Home/DefisPlayerColumn.dart';
-import 'package:appli_wei/Pages/Home/TeamDefisAdminColumn.dart';
-import 'package:appli_wei/Pages/Home/TeamDefisPlayerColumn.dart';
+import 'package:appli_wei/Pages/Home/ChallengesCaptainColumn.dart';
+import 'package:appli_wei/Pages/Home/ChallengesPlayerColumn.dart';
+import 'package:appli_wei/Pages/Home/TeamChallengesAdminColumn.dart';
+import 'package:appli_wei/Pages/Home/TeamChallengesPlayerColumn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// We define some convenience things for the tabs
 enum HomeTabItem { defis, teamDefis }
 
 Map<HomeTabItem, String> homeTabName = {
@@ -19,30 +18,17 @@ Map<HomeTabItem, int> homeTabIndex = {
   HomeTabItem.teamDefis: 1
 };
 
-/** 
- * Cette page correspond à la page d'accueil.
- * Seul les capitaines pourront valider les défis 
- *
- * Cette page affiche et dois récupérer : 
- * [Pour les utilisateurs]
- *  - Les défis de l'utilisateurs
- *  - Les défis d'équipes
- * [Pour les capitaines]
- * - Les défis des utilisateurs de l'équipe **qui sont à valider**
- * - Les défis d'équipes
- * [Pour les administrateurs]
- *  - Les défis des utilisateurs de toutes les équipes AVEC LE TITRE DE L'EQUIPE qui sont à valider
- *  - Les défis d'équipes
- */
+/// This is the home page of the application. It conciste in
+/// two tabs, one for challenges and one for team challenges
 class HomePage extends StatefulWidget {
   const HomePage({Key key, @required this.onPush}) : super(key: key);
   
   final ValueChanged<String> onPush;
   
-  HomePageState createState() => HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   void _tabChanged() {
@@ -79,12 +65,12 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
               controller: _tabController,
               children: <Widget>[
                 (applicationSettings.loggedUser.role == "captain" || applicationSettings.loggedUser.role == "admin") 
-                ? DefisCaptainColumn()
-                : DefisPlayerColumn(),
+                ? ChallengesCaptainColumn()
+                : ChallengesPlayerColumn(),
 
                 (applicationSettings.loggedUser.role == "admin")
-                ? TeamDefisAdminColumn()
-                : TeamDefisPlayerColumn(),
+                ? TeamChallengesAdminColumn()
+                : TeamChallengesPlayerColumn(),
               ],
             )
           ),

@@ -1,6 +1,6 @@
 import 'package:appli_wei/BottomNavigation.dart';
 import 'package:appli_wei/Pages/Home/HomePage.dart';
-import 'package:appli_wei/Pages/Profil/ManageDefisPage.dart';
+import 'package:appli_wei/Pages/Profil/ManageChallengesPage.dart';
 import 'package:appli_wei/Pages/Profil/ManageTeamsPage.dart';
 import 'package:appli_wei/Pages/Profil/ManageUsersPage.dart';
 import 'package:appli_wei/Pages/Profil/ProfilPage.dart';
@@ -17,6 +17,9 @@ class TabNavigatorRoutes {
   static const String manageTeams = '/manageTeams';
 }
 
+/// This class is a wrapper to ensure we can "push" a page 
+/// in the appliation without being abobe the wiget with
+/// this bottom bar
 class TabNavigator extends StatelessWidget {
   TabNavigator({this.navigatorKey, this.tabItem});
 
@@ -53,7 +56,7 @@ class TabNavigator extends StatelessWidget {
         TabNavigatorRoutes.root: (context) => ProfilPage(
           onPush: (destinationPage) => _push(context, destinationPage: destinationPage),
         ),
-        TabNavigatorRoutes.manageDefis: (context) => ManageDefisPage(),
+        TabNavigatorRoutes.manageDefis: (context) => ManageChallengesPage(),
         TabNavigatorRoutes.manageUsers: (context) => ManageUsersPage(),
         TabNavigatorRoutes.manageTeams: (context) => ManageTeamsPage(),
       };

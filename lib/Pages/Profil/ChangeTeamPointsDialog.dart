@@ -3,15 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// This dialog show a field with to add or remove
+/// points for the given [team]
 class ChangeTeamPointsDialog extends StatefulWidget {
   const ChangeTeamPointsDialog({Key key, @required this.team}) : super(key: key);
 
   final Team team;
 
-  ChangeTeamPointsDialogState createState() => ChangeTeamPointsDialogState();
+  @override
+  _ChangeTeamPointsDialogState createState() => _ChangeTeamPointsDialogState();
 }
 
-class ChangeTeamPointsDialogState extends State<ChangeTeamPointsDialog> {
+class _ChangeTeamPointsDialogState extends State<ChangeTeamPointsDialog> {
   final _formKey = GlobalKey<FormState>();
 
   int _pointsToAdd = 0;
@@ -62,8 +65,9 @@ class ChangeTeamPointsDialogState extends State<ChangeTeamPointsDialog> {
     );
   }
 
+  /// Save the [team] with his new points
   Future _saveTeamPoints(Team team) async {
-    await Firestore.instance.collection('teams').document(team.id).updateData({
+    await team.updateData({
       "points": FieldValue.increment(_pointsToAdd)
     });
   }

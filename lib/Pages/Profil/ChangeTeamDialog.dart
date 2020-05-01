@@ -2,15 +2,18 @@ import 'package:appli_wei/Models/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+/// This dialog show a dropdown with the list of teams 
+/// and update the given [user] team accordingly
 class ChangeTeamDialog extends StatefulWidget {
   const ChangeTeamDialog({Key key, @required this.user}) : super(key: key);
 
   final User user;
 
-  ChangeTeamDialogState createState() => ChangeTeamDialogState();
+  @override
+  _ChangeTeamDialogState createState() => _ChangeTeamDialogState();
 }
 
-class ChangeTeamDialogState extends State<ChangeTeamDialog> {
+class _ChangeTeamDialogState extends State<ChangeTeamDialog> {
   String _selectedTeamId;
 
   bool _loading = false;
@@ -51,6 +54,7 @@ class ChangeTeamDialogState extends State<ChangeTeamDialog> {
     );
   }
 
+  /// This return the dropdown with the teams from the [snapshot]
   Widget _buildDropdown(BuildContext context, List<DocumentSnapshot> snapshot) {
     return DropdownButton(
       hint: Text("Veuillez choisir une équipe"),
@@ -64,6 +68,7 @@ class ChangeTeamDialogState extends State<ChangeTeamDialog> {
     );
   }
   
+  /// This function return the dropdown item corresponding to the [data] provided
   DropdownMenuItem _buildDropdownItem(BuildContext context, DocumentSnapshot data) {
     return DropdownMenuItem(
       child: Text(data["name"]),
@@ -71,8 +76,9 @@ class ChangeTeamDialogState extends State<ChangeTeamDialog> {
     );
   }
 
+  /// Save the [user] with his new team
   Future _saveUserTeam(User user) async {
-    await Firestore.instance.collection('users').document(user.id).updateData({
+    await user.updateData({
       "team_id": _selectedTeamId
     });
   }

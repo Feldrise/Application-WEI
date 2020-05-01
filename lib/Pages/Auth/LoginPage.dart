@@ -1,22 +1,18 @@
-
-import 'dart:async';
-
-import 'package:appli_wei/Helper/AuthHelper.dart';
-import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Models/AuthService.Dart';
 import 'package:appli_wei/Widgets/TextInput.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:appli_wei/Widgets/WeiTitle.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// This page allows the user to login with his email and password
 class LoginPage extends StatefulWidget {
+
   @override
-  State<StatefulWidget> createState() => LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -44,9 +40,8 @@ class LoginPageState extends State<LoginPage> {
                   inputType: TextInputType.emailAddress,
                   inputDecoration: const InputDecoration(labelText: 'Email'),
                   validator: (String value) {
-                    // if (value.isEmpty || value.contains("etudiant.univ-rennes1.fr")) {
                     if (value.isEmpty) {
-                      return 'Veuillez rentrer une adresse mail étudante';
+                      return 'Veuillez rentrer une adresse mail';
                     }
                     return null;
                   },
@@ -69,6 +64,13 @@ class LoginPageState extends State<LoginPage> {
                     color: Theme.of(context).accentColor,
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
+                        // We wan't to remove keyboard when it's clicked
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+
                         _login();
                       }
                     },
@@ -91,46 +93,31 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // Clean up the controller when the Widget is disposed
+    super.dispose();
+
     _emailController.dispose();
     _passwordController.dispose();
-    super.dispose();
   }
 
-  // Example code for registration.
+  /// We login using the Auth service
   void _login() async {
-    String newStatusMessage = '';
+    // We should indicate that we are doing work in background to 
+    // show loading indicator
+    setState(() {
+        _loading = true;
+    });   
 
-    String userId = await AuthHelper.instance.loginUser(_emailController.text, _passwordController.text);
-    User loggedUser;
+    String newStatusMessage = await Provider.of<AuthService>(context, listen: false).loginUser(_emailController.text, _passwordController.text);
 
-    if (userId != null) {
-      Completer completer = new Completer<User>();
-      
-      Firestore.instance.collection('users').document(userId).snapshots().listen((snapshot) {
-        completer.complete(User.fromSnapshot(snapshot));
-      });
-
-      loggedUser = await completer.future;
-
-      if (loggedUser.teamId == null && loggedUser.role != "admin") {
-        newStatusMessage = "Désolé, vous n'avez pas encore d'équipe. Merci de réessayer plus tard.";
-        loggedUser = null;
-      }
-      else {
-        await Provider.of<AuthService>(context, listen: false).setUser(loggedUser);
-
-        newStatusMessage = "Connexion réussi !";
-
-        Navigator.of(context).pop();
-      }
+    // We leave the login page on success
+    if(newStatusMessage == "Success") {
+      Navigator.of(context).pop();
     }
     else {
-      newStatusMessage = "Erreur lors de la connexion. Vérifiez que vous avez entré le bon mot de passe, la bonne adresse mail et que vous l'avez vérifié.";
+      setState(() {
+        _loading = false;
+        _statusMessage = newStatusMessage;
+      });    
     }
-
-    setState(() {
-      _statusMessage = newStatusMessage;
-    });    
   }
 }

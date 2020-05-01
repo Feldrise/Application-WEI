@@ -9,18 +9,18 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+/// This is a form to update a team
 class EditTeam extends StatefulWidget {
   const EditTeam({Key key, @required this.team}) : super(key: key);
   
   final Team team;
-   
-  EditTeamState createState() => EditTeamState();
+  
+  @override
+  _EditTeamState createState() => _EditTeamState();
 }
 
-class EditTeamState extends State<EditTeam> {
+class _EditTeamState extends State<EditTeam> {
   final _formKey = GlobalKey<FormState>();
-
-  int i = 0;
 
   String _initialCaptainId = '';
   bool _updating = false;
@@ -63,10 +63,11 @@ class EditTeamState extends State<EditTeam> {
                         },
                         onSaved: (value) => widget.team.name = value,
                       ),
+                      
                       StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance.collection("users").snapshots(),
                         builder: (context, snapshot) {
-                          if (!snapshot.hasData) return CircularProgressIndicator();
+                          if (!snapshot.hasData) return LinearProgressIndicator();
 
                           List<DocumentSnapshot> possibleCaptains = [];
 
@@ -83,26 +84,29 @@ class EditTeamState extends State<EditTeam> {
                     ],
                   ),
                 ),
-               RaisedButton(
-                  child: const Text("Importer un avatar", style: TextStyle(color: Colors.white),),
-                  color: Theme.of(context).accentColor,
-                  onPressed: () async {
-                    print("upload team picture");
-                    
-                    await _updateTeamPicture();
-                  },
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child:RaisedButton(
+                    child: const Text("Importer un avatar", style: TextStyle(color: Colors.white),),
+                    color: Theme.of(context).accentColor,
+                    onPressed: _updateTeamPicture
+                  ),
                 ),
+
+                // We only show remove button for existing challenge
                 Visibility(
                   visible: widget.team.id != null,
-                  child: RaisedButton(
-                    child: const Text("Supprimer l'équipe...", style: TextStyle(color: Colors.white),),
-                    color: Theme.of(context).accentColor,
-                    onPressed: () async {
-                      print("Delete defi");
-                      
-                      await _deleteTeam();
-                      Navigator.of(context).pop();
-                    },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: RaisedButton(
+                      child: const Text("Supprimer l'équipe...", style: TextStyle(color: Colors.white),),
+                      color: Theme.of(context).accentColor,
+                      onPressed: () async {
+                        await _deleteTeam();
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 )
               ],
@@ -115,16 +119,15 @@ class EditTeamState extends State<EditTeam> {
         child: Icon(Icons.check, color: Colors.white,),
         backgroundColor: Colors.green,
         onPressed: () async {
-          print("Save the team");
-
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
             
+            // We update the UI to show the progress indicator
             setState(() {
               _updating = true;
             });
 
-            await _saveDefiToFirebase();
+            await _saveTeamToFirebase();
             
             Navigator.of(context).pop(true);
           }
@@ -133,6 +136,7 @@ class EditTeamState extends State<EditTeam> {
     );
   }
 
+  /// This function build a dropdown with the list of the users in the [snapshot]
   Widget _buildDropdown(BuildContext context, List<DocumentSnapshot> snapshot) {
     return DropdownButton(
       hint: Text("Veuillez choisir une équipe"),
@@ -146,6 +150,7 @@ class EditTeamState extends State<EditTeam> {
     );
   }
   
+  /// This function build a dropdown item from the [data] provided
   DropdownMenuItem _buildDropdownItem(BuildContext context, DocumentSnapshot data) {
     return DropdownMenuItem(
       child: Text(data["first_name"] + ' ' + data['second_name']),
@@ -153,7 +158,8 @@ class EditTeamState extends State<EditTeam> {
     );
   }
 
-  Future _saveDefiToFirebase() async {
+  /// This function save the team to Firebase
+  Future _saveTeamToFirebase() async {
     CollectionReference teamsCollectionReference = Firestore.instance.collection("teams");
     CollectionReference usersCollectionReference = Firestore.instance.collection("users");
 
@@ -161,17 +167,19 @@ class EditTeamState extends State<EditTeam> {
       widget.team.id = (await teamsCollectionReference.add(widget.team.toJson())).documentID;
     }
     else {
-      await teamsCollectionReference.document(widget.team.id).setData(widget.team.toJson());
+      await widget.team.update();
     }
 
+    // If the captain has changed, we need to updates roles
     if (_initialCaptainId != widget.team.captainId) {
       if (_initialCaptainId.isNotEmpty && !widget.team.captainIsAdmin) {
-        await usersCollectionReference.document(_initialCaptainId).updateData({
+        await User(id: _initialCaptainId).updateData({
           'role': 'player',
         });
       }
 
-      // We check if the new user is an admin
+      // We check if the new user is an admin cause we don't want to 
+      // downgrad admins
       Completer completer = new Completer<User>();
       usersCollectionReference.document(widget.team.captainId).snapshots().listen((data) {
         completer.complete(User.fromSnapshot(data));
@@ -179,20 +187,21 @@ class EditTeamState extends State<EditTeam> {
 
       User newCaptain = await completer.future;
 
-      // We change the role of the new captain
+      // We change the role of the new captain only if he is not 
+      // an admin
       if (newCaptain.role != "admin") {
-        await usersCollectionReference.document(newCaptain.id).updateData({
+        await newCaptain.updateData({
           'role': 'captain',
         });
       }
 
-      // We change the team of the new captain
-      await usersCollectionReference.document(newCaptain.id).updateData({
+      await newCaptain.updateData({
         'team_id': widget.team.id,
       });
     }
   }
 
+  /// This function show a dialog and then delete the team from Firebase
   Future _deleteTeam() async {
     await showDialog(
       context: context,
@@ -207,13 +216,17 @@ class EditTeamState extends State<EditTeam> {
                 Navigator.of(context).pop();
               },
             ),
+
             FlatButton(
               child: Text("Oui", style: TextStyle(color: Theme.of(context).accentColor),),
               onPressed: () async {
+                
+                // We update the UI to show the progress indicator
                 setState(() {
                   _updating = true;
                 });
 
+                // We need to set the team to nul for all team's players
                 CollectionReference usersCollectionReference = Firestore.instance.collection('users');
                 CollectionReference teamsCollectionReference = Firestore.instance.collection('teams');
 
@@ -232,11 +245,14 @@ class EditTeamState extends State<EditTeam> {
                 });
 
                 await completer.future;
+
+                // If the old captain wasn't an admin, he is now a player
                 if (_initialCaptainId.isNotEmpty && !widget.team.captainIsAdmin) {
                   await usersCollectionReference.document(_initialCaptainId).updateData({
                     'role': 'player',
                   });
                 }
+
                 await teamsCollectionReference.document(widget.team.id).delete();
 
                 Navigator.of(context).pop();
@@ -248,6 +264,7 @@ class EditTeamState extends State<EditTeam> {
     );
   }
   
+  /// The function upload profil picture to Firebase for the team
   Future _updateTeamPicture() async {
     // First we get the image
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -256,9 +273,7 @@ class EditTeamState extends State<EditTeam> {
       StorageReference storageReference = FirebaseStorage.instance.ref().child('avatars/teams/${widget.team.id}');    
       StorageUploadTask uploadTask = storageReference.putFile(image);    
       await uploadTask.onComplete;  
-        
-      print('Avatar Uploaded');    
-      
+
       setState(() {});  
     }  
   }

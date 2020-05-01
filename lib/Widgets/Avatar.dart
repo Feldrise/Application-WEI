@@ -23,11 +23,11 @@ class AvatarState extends State<Avatar> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseStorage.instance.ref().child(widget.path).getDownloadURL().then((foundUrl) {
-      setState(() {
-        _avatarUrl = foundUrl;
-      });
-    });
+    // FirebaseStorage.instance.ref().child(widget.path).getDownloadURL().then((foundUrl) {
+    //   setState(() {
+    //     _avatarUrl = foundUrl;
+    //   });
+    // });
     
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
