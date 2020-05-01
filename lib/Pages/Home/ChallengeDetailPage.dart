@@ -26,6 +26,7 @@ class ChallengeDetailPage extends StatefulWidget {
   final User userForChallenge;
   final Team teamForChallenge;
   
+  @override
   _DefiDetailPageState createState() => _DefiDetailPageState();
 }
 

@@ -22,6 +22,7 @@ class RanksPage extends StatefulWidget {
   
   final ValueChanged<String> onPush;
 
+  @override
   _RanksPageState createState() => _RanksPageState();
 }
 
