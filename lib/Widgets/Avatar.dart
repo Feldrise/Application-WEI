@@ -1,6 +1,9 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
+/// This widget is a widget who try to get
+/// the profil picture from Firebase and
+/// show the application logo by default
 class Avatar extends StatefulWidget {
   const Avatar({
     Key key, 
@@ -15,10 +18,10 @@ class Avatar extends StatefulWidget {
   final Color backgroundColor;
 
   @override
-  AvatarState createState() => AvatarState();
+  _AvatarState createState() => _AvatarState();
 }
 
-class AvatarState extends State<Avatar> {
+class _AvatarState extends State<Avatar> {
   String _avatarUrl = '';
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// See https://stackoverflow.com/questions/53479942/checkbox-form-validation 
 class CheckboxFormField extends FormField<bool> {
   CheckboxFormField({
     Widget title,

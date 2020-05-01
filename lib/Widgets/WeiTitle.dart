@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// This is a title widget which return a text
+/// in a container with accent color as background
 class WeiTitle extends StatelessWidget {
   const WeiTitle({Key key, @required this.title}) : super(key: key);
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// This is a wrapper for a TextFormField. It add
+/// some nice graphics effects
 class TextInput extends StatelessWidget {
   const TextInput({
     Key key, 

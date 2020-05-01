@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// This is the default application card
 class WeiCard extends StatelessWidget {
   const WeiCard({
     Key key, 
