@@ -43,7 +43,7 @@ class PlayerRankCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("${user.firstName} ${user.secondName}", style: Theme.of(context).textTheme.subtitle.merge(TextStyle(color: textColor)),),
+                Text("${user.firstName} ${user.secondName}", style: Theme.of(context).textTheme.subtitle2.merge(TextStyle(color: textColor)),),
                 user.teamId == null // The user may has no team
                 ? Text("Equipe : pas d'équipe",)
                 : StreamBuilder<DocumentSnapshot>(
@@ -62,7 +62,7 @@ class PlayerRankCard extends StatelessWidget {
           // The user rank index
           Expanded(
             flex: 3,
-            child: Text("#$rankPosition", style: Theme.of(context).textTheme.title.merge(TextStyle(color: textColor)),),
+            child: Text("#$rankPosition", style: Theme.of(context).textTheme.headline6.merge(TextStyle(color: textColor)),),
           )
         ],
       ),

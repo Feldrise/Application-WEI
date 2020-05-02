@@ -31,7 +31,7 @@ class TeamCard extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(left: 16),
-                  child: Text(team.name, style: Theme.of(context).textTheme.subhead,),
+                  child: Text(team.name, style: Theme.of(context).textTheme.subtitle2,),
                 ),
                 
                 team.captainId == null || team.captainId.isEmpty

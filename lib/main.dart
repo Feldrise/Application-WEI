@@ -50,8 +50,8 @@ class MyApp extends StatelessWidget {
             ),
 
             textTheme: TextTheme(
-              title: TextStyle(fontSize: 38.0, fontWeight: FontWeight.w500, color: Colors.black87),
-              subtitle: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300, color: Colors.black87),
+              headline6: TextStyle(fontSize: 38.0, fontWeight: FontWeight.w500, color: Colors.black87),
+              subtitle2: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300, color: Colors.black87),
             ),
           ),
           home: FutureBuilder(

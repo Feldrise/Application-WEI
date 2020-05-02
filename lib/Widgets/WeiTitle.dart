@@ -22,7 +22,7 @@ class WeiTitle extends StatelessWidget {
             height: 64,
           ),
           SizedBox(height: 16,),
-          Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.title.merge(TextStyle(color: Colors.white)),)
+          Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6.merge(TextStyle(color: Colors.white)),)
         ],
       )
     );

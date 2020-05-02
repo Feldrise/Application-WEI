@@ -30,7 +30,7 @@ class TeamChallengesAdminColumn extends StatelessWidget {
                 // This is the name of the team
                 Container(
                   padding: EdgeInsets.only(left: 8, top: 8),
-                  child: Text(teamSnapshot.data['name'], style: Theme.of(context).textTheme.subtitle,),
+                  child: Text(teamSnapshot.data['name'], style: Theme.of(context).textTheme.subtitle2,),
                 ),
                 // This is the list of challenges
                 StreamBuilder<QuerySnapshot>(

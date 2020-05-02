@@ -5,9 +5,13 @@ import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
+import 'package:universal_html/prefer_universal/html.dart' as html;
+// import 'package:firebase/firebase.dart' as fb;
 
 /// This page show the details of a challenge. The details are
 ///  - The picture of the challenge
@@ -76,7 +80,7 @@ class _DefiDetailPageState extends State<ChallengeDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(widget.challenge.name, style: Theme.of(context).textTheme.subtitle,),
+                    Text(widget.challenge.name, style: Theme.of(context).textTheme.subtitle2,),
                     SizedBox(height: 16),
                     Text(widget.challenge.description)
                   ],
@@ -92,7 +96,7 @@ class _DefiDetailPageState extends State<ChallengeDetailPage> {
                   child: _uploadingProof ? CircularProgressIndicator() : RaisedButton(
                     child: const Text('Envoyer une preuve de validation du défi', style: TextStyle(color: Colors.white),),
                     color: Theme.of(context).accentColor,
-                    onPressed: (widget.challenge.pendingValidation || widget.challenge.validatedByUser) ? null : _uploadProof,
+                    onPressed: (widget.challenge.pendingValidation || widget.challenge.validatedByUser) ? null : (kIsWeb ? _uploadProofHtml : _uploadProof),
                   ),
                 ),
               ),
@@ -168,13 +172,58 @@ class _DefiDetailPageState extends State<ChallengeDetailPage> {
     }
   }
 
+  /// This function allows to upload proof on the web app
+  Future _uploadProofHtml() async {
+    // FIREBASE_WEB Comment this out when running web version
+    // final html.InputElement input = html.document.createElement('input');
+    // final  User loggedUser = Provider.of<ApplicationSettings>(context, listen: false).loggedUser;
+
+
+    // input..type = 'file'..accept = 'image/*';
+
+    // input.onChange.listen((e) async {
+    //   if (input.files == null || input.files[0] == null)
+    //     return;
+    //   // We indicate to the UI we are currently doing work in
+    //   // background so it can show the progress indicator
+    //   setState(() {
+    //     _uploadingProof = true;
+    //   });
+
+    //   final List<html.File> files = input.files;
+
+    //   fb.StorageReference storageRef = fb.storage().ref('proofs/${loggedUser.id}/${widget.challenge.id}');
+    //   await storageRef.put(files[0]).future;
+
+    //   loggedUser.challengesToValidate.add(widget.challenge.id);
+    //   loggedUser.update();
+        
+    //   setState(() {
+    //     _uploadingProof = false;
+    //     widget.challenge.pendingValidation = true; // We update the UI to not send proof again
+    //   });  
+    // });
+
+    // input.click();
+    
+  }
+
   /// This function is used for captain and admin to get proof image
   Future<Widget> _getProofImage() async {
     // We don't want to download proof image multiple time
     if (_proofImage != null) 
       return _proofImage;
 
-    String imageUrl = await FirebaseStorage.instance.ref().child('proofs/${widget.userForChallenge.id}/${widget.challenge.id}').getDownloadURL();
+    String imageUrl = '';
+    
+    // We have different ways to get the image URL between web app normal app
+    if (kIsWeb) {
+    //  Uri imageUri = await fb.storage().ref('proofs/${widget.userForChallenge.id}/${widget.challenge.id}').getDownloadURL();
+    //  imageUrl = imageUri.toString();
+    }
+    else {
+     imageUrl = await FirebaseStorage.instance.ref().child('proofs/${widget.userForChallenge.id}/${widget.challenge.id}').getDownloadURL();
+    }
     
     _proofImage = Image.network(
         imageUrl,

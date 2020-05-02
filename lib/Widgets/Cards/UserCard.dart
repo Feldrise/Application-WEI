@@ -31,7 +31,7 @@ class UserCard extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(left: 16),
-                  child: Text("${user.firstName} ${user.secondName}", style: Theme.of(context).textTheme.subhead,),
+                  child: Text("${user.firstName} ${user.secondName}", style: Theme.of(context).textTheme.subtitle2,),
                 ),
 
                 user.teamId == null 

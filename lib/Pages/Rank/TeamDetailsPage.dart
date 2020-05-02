@@ -33,7 +33,7 @@ class TeamDetailPage extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   Avatar(path: 'avatars/teams/${team.id}',),
-                  Text("Equipe ${team.name}", style: Theme.of(context).textTheme.subtitle.merge(TextStyle(color: Colors.white)),)
+                  Text("Equipe ${team.name}", style: Theme.of(context).textTheme.subtitle2.merge(TextStyle(color: Colors.white)),)
                 ],
               ),
             ),
@@ -57,7 +57,7 @@ class TeamDetailPage extends StatelessWidget {
                           child: Row(
                             children: <Widget>[
                               Avatar(path: 'avatars/${snapshot.data.documentID}',),
-                              Text("Capitaine : " + snapshot.data['first_name'] + ' ' + snapshot.data['second_name'], style: Theme.of(context).textTheme.subhead,)
+                              Text("Capitaine : " + snapshot.data['first_name'] + ' ' + snapshot.data['second_name'], style: Theme.of(context).textTheme.subtitle2,)
                             ],
                           ),
                         );

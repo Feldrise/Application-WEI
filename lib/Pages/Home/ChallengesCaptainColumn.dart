@@ -45,7 +45,7 @@ class ChallengesCaptainColumn extends StatelessWidget {
                     // The user name
                     Container(
                       padding: EdgeInsets.only(left: 8, top: 8),
-                      child: Text("${userForChallenge.firstName} ${userForChallenge.secondName}", style: Theme.of(context).textTheme.subtitle,),
+                      child: Text("${userForChallenge.firstName} ${userForChallenge.secondName}", style: Theme.of(context).textTheme.subtitle2,),
                     ),
                     // The list of challenges
                     StreamBuilder<QuerySnapshot>(

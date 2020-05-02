@@ -6,8 +6,12 @@ import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:universal_html/prefer_universal/html.dart' as html;
+// import 'package:firebase/firebase.dart' as fb;
 
 /// This is a form to update a team
 class EditTeam extends StatefulWidget {
@@ -90,7 +94,7 @@ class _EditTeamState extends State<EditTeam> {
                   child:RaisedButton(
                     child: const Text("Importer un avatar", style: TextStyle(color: Colors.white),),
                     color: Theme.of(context).accentColor,
-                    onPressed: _updateTeamPicture
+                    onPressed: (kIsWeb) ? _updateTeamPictureHtml : _updateTeamPicture
                   ),
                 ),
 
@@ -276,5 +280,28 @@ class _EditTeamState extends State<EditTeam> {
 
       setState(() {});  
     }  
+  }
+
+  /// This is the same function as _updateTeamPicture but for the web app
+  Future _updateTeamPictureHtml() async {
+    // FIREBASE_WEB Comment this out when running web version
+    // final html.InputElement input = html.document.createElement('input');
+
+    // input..type = 'file'..accept = 'image/*';
+
+    // input.onChange.listen((e) async {
+    //   if (input.files == null || input.files[0] == null)
+    //     return;
+
+    //   final List<html.File> files = input.files;
+
+    //   fb.StorageReference storageRef = fb.storage().ref('avatars/teams/${widget.team.id}');
+    //   await storageRef.put(files[0]).future;
+
+    //   setState(() {});  
+    // });
+
+    // input.click();
+    
   }
 }

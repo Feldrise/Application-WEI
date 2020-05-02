@@ -4,9 +4,14 @@ import 'package:appli_wei/Models/User.dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
+import 'package:universal_html/prefer_universal/html.dart' as html;
+// import 'package:firebase/firebase.dart' as fb;
+
 
 /// This page shows every informations for the current
 /// player. It also shows some control button (like 
@@ -53,7 +58,7 @@ class _ProfilPageState extends State<ProfilPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text("${currentUser.firstName} ${currentUser.secondName}", style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: Colors.white)),),
+                            Text("${currentUser.firstName} ${currentUser.secondName}", style: Theme.of(context).textTheme.subtitle2.merge(TextStyle(color: Colors.white)),),
                             
                             currentUser.teamId != null
                             ? StreamBuilder<DocumentSnapshot>(
@@ -61,10 +66,10 @@ class _ProfilPageState extends State<ProfilPage> {
                               builder: (context, teamSnapshot) {
                                 if (!teamSnapshot.hasData) return LinearProgressIndicator();
                                 
-                                return Text("Equipe " + teamSnapshot.data["name"], style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: Colors.white)),);
+                                return Text("Equipe " + teamSnapshot.data["name"], style: Theme.of(context).textTheme.subtitle2.merge(TextStyle(color: Colors.white)),);
                               },
                             )
-                            : Text("Vous n'avez pas encore d'équipe", style: Theme.of(context).textTheme.subhead.merge(TextStyle(color: Colors.white))),
+                            : Text("Vous n'avez pas encore d'équipe", style: Theme.of(context).textTheme.subtitle2.merge(TextStyle(color: Colors.white))),
                           ],
                         ),
                       )
@@ -88,7 +93,7 @@ class _ProfilPageState extends State<ProfilPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Icon(Icons.whatshot, size: 128,),
-                              Text("${currentUser.points} points", style: Theme.of(context).textTheme.subhead,)
+                              Text("${currentUser.points} points", style: Theme.of(context).textTheme.subtitle2,)
                             ],
                           ),
                         ),
@@ -110,7 +115,12 @@ class _ProfilPageState extends State<ProfilPage> {
                             child: const Text("Changer l'avatar de mon équipe", style: TextStyle(color: Colors.white),),
                             color: Theme.of(context).accentColor,
                             onPressed: () async {
-                              await _updateTeamPicture(appliationSettings.loggedUser.teamId);
+                              if (kIsWeb) {
+                                await _updateTeamPictureHtml(appliationSettings.loggedUser.teamId);
+                              }
+                              else {
+                                await _updateTeamPicture(appliationSettings.loggedUser.teamId);
+                              }
                             },
                           ),
                         ),
@@ -125,7 +135,12 @@ class _ProfilPageState extends State<ProfilPage> {
                                   child: const Text('Changer la photo de profil', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                                   color: Theme.of(context).accentColor,
                                   onPressed: () async {
-                                    await _updateProfilePicture(appliationSettings.loggedUser.id);
+                                    if (kIsWeb) {
+                                      await _updateProfilePictureHtml(appliationSettings.loggedUser.id);
+                                    }
+                                    else {
+                                      await _updateProfilePicture(appliationSettings.loggedUser.id);
+                                    }
                                   },
                                 ),
                               ),
@@ -218,5 +233,51 @@ class _ProfilPageState extends State<ProfilPage> {
               
       setState(() {});  
     }    
+  }
+
+  /// This is the same function as _updateProfilePicture but for the web app
+  Future _updateProfilePictureHtml(String userId) async {
+    // FIREBASE_WEB Comment this out when running web version
+    // final html.InputElement input = html.document.createElement('input');
+
+    // input..type = 'file'..accept = 'image/*';
+
+    // input.onChange.listen((e) async {
+    //   if (input.files == null || input.files[0] == null)
+    //     return;
+
+    //   final List<html.File> files = input.files;
+
+    //   fb.StorageReference storageRef = fb.storage().ref('avatars/$userId');
+    //   await storageRef.put(files[0]).future;
+
+    //   setState(() {});  
+    // });
+
+    // input.click();
+    
+  }
+
+  /// This is the same function as _updateTeamPicture but for the web app
+  Future _updateTeamPictureHtml(String teamId) async {
+    // FIREBASE_WEB Comment this out when running web version
+    // final html.InputElement input = html.document.createElement('input');
+
+    // input..type = 'file'..accept = 'image/*';
+
+    // input.onChange.listen((e) async {
+    //   if (input.files == null || input.files[0] == null)
+    //     return;
+
+    //   final List<html.File> files = input.files;
+
+    //   fb.StorageReference storageRef = fb.storage().ref('avatars/teams/$teamId');
+    //   await storageRef.put(files[0]).future;
+
+    //   setState(() {});  
+    // });
+
+    // input.click();
+    
   }
 }

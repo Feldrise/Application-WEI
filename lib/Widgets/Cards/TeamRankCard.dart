@@ -47,7 +47,7 @@ class TeamRankCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 // The team name
-                Text("${team.name}", style: Theme.of(context).textTheme.subtitle.merge(TextStyle(color: textColor)),),
+                Text("${team.name}", style: Theme.of(context).textTheme.subtitle2.merge(TextStyle(color: textColor)),),
                 
                 // The team captain
                 team.captainId == null || team.captainId.isEmpty
@@ -78,7 +78,7 @@ class TeamRankCard extends StatelessWidget {
           // The team rank
           Expanded(
             flex: 3,
-            child: Text("#$rankPosition", style: Theme.of(context).textTheme.title.merge(TextStyle(color: textColor)),),
+            child: Text("#$rankPosition", style: Theme.of(context).textTheme.headline6.merge(TextStyle(color: textColor)),),
           )
         ],
       ),

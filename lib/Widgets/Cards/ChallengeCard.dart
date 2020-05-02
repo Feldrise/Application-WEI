@@ -41,7 +41,7 @@ class ChallengeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // The name of the challenge
-                Text(challenge.name, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle,),
+                Text(challenge.name, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle2,),
 
                 SizedBox(height: 4,),
                 
