@@ -25,7 +25,7 @@ class _ChangeUserPointsDialogState extends State<ChangeUserPointsDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text("Points pour l'utilisateur"),
-      content: _upddating ? CircularProgressIndicator() : Form(
+      content: _upddating ? LinearProgressIndicator() : Form(
         key: _formKey,
         child: TextFormField(
           keyboardType: TextInputType.numberWithOptions(signed: true),

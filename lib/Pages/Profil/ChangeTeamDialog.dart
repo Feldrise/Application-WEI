@@ -29,10 +29,10 @@ class _ChangeTeamDialogState extends State<ChangeTeamDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text("Equipe pour l'utilisateur"),
-      content: _loading ? CircularProgressIndicator() : StreamBuilder<QuerySnapshot>(
+      content: _loading ? LinearProgressIndicator() : StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection("teams").snapshots(),
         builder: (context, snaphot) {
-          if (!snaphot.hasData) return CircularProgressIndicator();
+          if (!snaphot.hasData) return Center(child: CircularProgressIndicator());
 
           return _buildDropdown(context, snaphot.data.documents);
         },

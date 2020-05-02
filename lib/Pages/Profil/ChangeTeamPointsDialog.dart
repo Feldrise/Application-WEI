@@ -25,7 +25,7 @@ class _ChangeTeamPointsDialogState extends State<ChangeTeamPointsDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text("Points pour l'équipe"),
-      content: _upddating ? CircularProgressIndicator() : Form(
+      content: _upddating ? LinearProgressIndicator() : Form(
         key: _formKey,
         child: TextFormField(
           keyboardType: TextInputType.numberWithOptions(signed: true),
