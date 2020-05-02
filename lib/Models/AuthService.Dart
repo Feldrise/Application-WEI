@@ -40,6 +40,9 @@ class AuthService with ChangeNotifier {
     } on PlatformException catch(e) {
       return e.message;
     }
+    catch(e) {
+      return "Une erreur est survenue lors de votre inscription. L'email est peut-être déjà utilisée ? ";
+    }
 
     return "Vous avez été correctement enregistré. Veuillez confirmer votre mail puis vous connecter.";
   }
@@ -102,12 +105,17 @@ class AuthService with ChangeNotifier {
           return "Désolé, vous n'avez pas encore d'équipe. Merci de réessayer plus tard.";
         }
 
+        
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("userId", _loggedUser.id);
+
         notifyListeners(); // We only notify listener for successful connections
         return "Success";
       }
     } on PlatformException catch(e) {
       errorMessage = e.message;
     }
+    catch(e) {}
     
     return "Erreur lors de la connexion. Vérifiez que vous avez entré le bon mot de passe, la bonne adresse mail et que vous l'avez vérifié.\n$errorMessage";
   }
