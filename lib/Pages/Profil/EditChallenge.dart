@@ -23,7 +23,7 @@ class _EditChallengeState extends State<EditChallenge> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: (MediaQuery.of(context).size.width > 980) ? null : AppBar(
         title: Text("Edition d'un défi"),
       ),
       body: Container(
@@ -176,8 +176,11 @@ class _EditChallengeState extends State<EditChallenge> {
             });
 
             await _saveChallengeToFirebase();
-            
-            Navigator.of(context).pop(true);
+
+            // We update the UI to show the progress indicator
+            setState(() {
+              _updating = false;
+            });
           }
         },
       ),

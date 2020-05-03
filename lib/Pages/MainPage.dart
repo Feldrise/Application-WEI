@@ -1,5 +1,6 @@
 
 import 'package:appli_wei/BottomNavigation.dart';
+import 'package:appli_wei/SidebarMenu.dart';
 import 'package:appli_wei/TabNavigator.dart';
 import 'package:flutter/material.dart';
 
@@ -49,17 +50,35 @@ class _MainPageState extends State<MainPage> {
         // let system handle back button if we're on the first route
         return isFirstRouteInCurrentTab;
       },
-      child: Scaffold(
-        body: Stack(children: <Widget>[
-          _buildOffstageNavigator(TabItem.home),
-          _buildOffstageNavigator(TabItem.ranks),
-          _buildOffstageNavigator(TabItem.profil),
-        ]),
-        bottomNavigationBar: BottomNavigation(
-          currentTab: _currentTab,
-          onSelectTab: _selectTab,
-        ),
-      ),
+      child: LayoutBuilder(
+        builder: (context, constraint) {
+          return Scaffold(
+            body: Row(
+              children: <Widget>[
+                if (constraint.maxWidth > 600)
+                  SidebarMenu(
+                    currentTab: _currentTab,
+                    onSelectTab: _selectTab,
+                  ),
+
+                Expanded(
+                  child: Stack(
+                    children: <Widget>[
+                      _buildOffstageNavigator(TabItem.home),
+                      _buildOffstageNavigator(TabItem.ranks),
+                      _buildOffstageNavigator(TabItem.profil),
+                    ]
+                  ),
+                ),
+              ]
+            ),
+            bottomNavigationBar: constraint.maxWidth > 600 ? null : BottomNavigation(
+              currentTab: _currentTab,
+              onSelectTab: _selectTab,
+            ),
+          );
+        },
+      )
     );
   }
 

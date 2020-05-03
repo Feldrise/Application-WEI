@@ -2,6 +2,7 @@
 import 'package:appli_wei/Models/Challenge.dart';
 import 'package:appli_wei/Models/Team.dart';
 import 'package:appli_wei/Models/User.dart';
+import 'package:appli_wei/Pages/Home/ChallengeDetailPage.dart';
 import 'package:appli_wei/Widgets/Cards/ChallengeCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -101,8 +102,16 @@ class TeamChallengesAdminColumn extends StatelessWidget {
 
         return ChallengeCard(
           challenge: challenge, 
-          userForChallenge: captain,
-          teamForChallenge: teamForChallenge,
+          onButtonPressed: () async {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChallengeDetailPage(
+                challenge: challenge,
+                userForChallenge: captain,
+                teamForChallenge: teamForChallenge,
+              )),
+            );
+          }
         );
       },
     );

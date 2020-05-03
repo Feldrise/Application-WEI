@@ -1,8 +1,4 @@
 import 'package:appli_wei/Models/Challenge.dart';
-import 'package:appli_wei/Models/Team.dart';
-import 'package:appli_wei/Models/User.dart';
-import 'package:appli_wei/Pages/Home/ChallengeDetailPage.dart';
-import 'package:appli_wei/Pages/Profil/EditChallenge.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
 import 'package:flutter/material.dart';
 
@@ -12,17 +8,15 @@ class ChallengeCard extends StatelessWidget {
   const ChallengeCard({
     Key key, 
     @required this.challenge, 
-    this.userForChallenge, 
-    this.teamForChallenge, 
+    @required this.onButtonPressed,
     this.isManaged = false
   }) : super(key: key);
 
   final Challenge challenge;
 
-  final User userForChallenge;
-  final Team teamForChallenge;
-
   final bool isManaged;
+
+  final ChallengeCardButtonPressed onButtonPressed;
   
   @override
   Widget build(BuildContext context) {
@@ -56,12 +50,7 @@ class ChallengeCard extends StatelessWidget {
                   visible: !isManaged,
                   child: FlatButton(
                     child: Text("Détails", style: TextStyle(color: Theme.of(context).accentColor),),
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ChallengeDetailPage(challenge: challenge, userForChallenge: userForChallenge, teamForChallenge: teamForChallenge,)),
-                      );
-                    },
+                    onPressed: onButtonPressed
                   )
                 ),
 
@@ -71,12 +60,7 @@ class ChallengeCard extends StatelessWidget {
                   visible: isManaged,
                   child: FlatButton(
                     child: Text("Modifier", style: TextStyle(color: Theme.of(context).accentColor),),
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EditChallenge(challenge: challenge,)),
-                      );
-                    },
+                    onPressed: onButtonPressed
                   ),
                 )
               ],
@@ -113,7 +97,7 @@ class ChallengeCard extends StatelessWidget {
                     child: Image.network(
                       challenge.imageUrl,
                       height: 128,
-                      fit: BoxFit.fitHeight,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   // The validated marck
@@ -124,7 +108,7 @@ class ChallengeCard extends StatelessWidget {
                       child: Image(
                         image: AssetImage("assets/images/check.png"),
                         height: 128,
-                        fit: BoxFit.fitHeight,
+                        fit: BoxFit.fitWidth,
                       )
                     ),
                   ),
@@ -137,3 +121,5 @@ class ChallengeCard extends StatelessWidget {
     );
   }
 }
+
+typedef ChallengeCardButtonPressed = Future Function();

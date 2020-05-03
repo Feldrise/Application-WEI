@@ -21,6 +21,7 @@ Map<TabItem, int> tabIndex = {
 };
 
 /// This is the bottom navigation bar of the application
+/// It's only visible on small screens
 class BottomNavigation extends StatelessWidget {
   BottomNavigation({this.currentTab, this.onSelectTab});
 

@@ -62,7 +62,7 @@ class PlayerRankCard extends StatelessWidget {
           // The user rank index
           Expanded(
             flex: 3,
-            child: Text("#$rankPosition", style: Theme.of(context).textTheme.headline6.merge(TextStyle(color: textColor)),),
+            child: Text("#$rankPosition", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6.merge(TextStyle(color: textColor)),),
           )
         ],
       ),

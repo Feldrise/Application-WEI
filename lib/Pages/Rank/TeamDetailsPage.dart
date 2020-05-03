@@ -1,5 +1,6 @@
 import 'package:appli_wei/Models/Challenge.dart';
 import 'package:appli_wei/Models/Team.dart';
+import 'package:appli_wei/Pages/Home/ChallengeDetailPage.dart';
 import 'package:appli_wei/Widgets/Avatar.dart';
 import 'package:appli_wei/Widgets/Cards/ChallengeCard.dart';
 import 'package:appli_wei/Widgets/WeiCard.dart';
@@ -125,6 +126,16 @@ class TeamDetailPage extends StatelessWidget {
 
     challenge.validatedByUser = true; // All challenges from here are validated
 
-    return ChallengeCard(challenge: challenge,);
+    return ChallengeCard(
+      challenge: challenge,
+      onButtonPressed: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChallengeDetailPage(
+            challenge: challenge,
+          )),
+        );
+      }
+    );
   }
 }

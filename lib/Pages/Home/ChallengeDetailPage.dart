@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:universal_html/prefer_universal/html.dart' as html;
-// import 'package:firebase/firebase.dart' as fb;
+import 'package:firebase/firebase.dart' as fb;
 
 /// This page show the details of a challenge. The details are
 ///  - The picture of the challenge
@@ -64,9 +64,12 @@ class _DefiDetailPageState extends State<ChallengeDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               // The challenge picture
-              Image.network(
-                widget.challenge.imageUrl,
-                fit: BoxFit.fitWidth,
+              Container(
+                constraints: BoxConstraints(maxHeight: 300),
+                child: Image.network(
+                  widget.challenge.imageUrl,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
 
               // The challenge state
@@ -175,36 +178,36 @@ class _DefiDetailPageState extends State<ChallengeDetailPage> {
   /// This function allows to upload proof on the web app
   Future _uploadProofHtml() async {
     // FIREBASE_WEB Comment this out when running web version
-    // final html.InputElement input = html.document.createElement('input');
-    // final  User loggedUser = Provider.of<ApplicationSettings>(context, listen: false).loggedUser;
+    final html.InputElement input = html.document.createElement('input');
+    final  User loggedUser = Provider.of<ApplicationSettings>(context, listen: false).loggedUser;
 
 
-    // input..type = 'file'..accept = 'image/*';
+    input..type = 'file'..accept = 'image/*';
 
-    // input.onChange.listen((e) async {
-    //   if (input.files == null || input.files[0] == null)
-    //     return;
-    //   // We indicate to the UI we are currently doing work in
-    //   // background so it can show the progress indicator
-    //   setState(() {
-    //     _uploadingProof = true;
-    //   });
+    input.onChange.listen((e) async {
+      if (input.files == null || input.files[0] == null)
+        return;
+      // We indicate to the UI we are currently doing work in
+      // background so it can show the progress indicator
+      setState(() {
+        _uploadingProof = true;
+      });
 
-    //   final List<html.File> files = input.files;
+      final List<html.File> files = input.files;
 
-    //   fb.StorageReference storageRef = fb.storage().ref('proofs/${loggedUser.id}/${widget.challenge.id}');
-    //   await storageRef.put(files[0]).future;
+      fb.StorageReference storageRef = fb.storage().ref('proofs/${loggedUser.id}/${widget.challenge.id}');
+      await storageRef.put(files[0]).future;
 
-    //   loggedUser.challengesToValidate.add(widget.challenge.id);
-    //   loggedUser.update();
+      loggedUser.challengesToValidate.add(widget.challenge.id);
+      loggedUser.update();
         
-    //   setState(() {
-    //     _uploadingProof = false;
-    //     widget.challenge.pendingValidation = true; // We update the UI to not send proof again
-    //   });  
-    // });
+      setState(() {
+        _uploadingProof = false;
+        widget.challenge.pendingValidation = true; // We update the UI to not send proof again
+      });  
+    });
 
-    // input.click();
+    input.click();
     
   }
 
@@ -218,8 +221,9 @@ class _DefiDetailPageState extends State<ChallengeDetailPage> {
     
     // We have different ways to get the image URL between web app normal app
     if (kIsWeb) {
-    //  Uri imageUri = await fb.storage().ref('proofs/${widget.userForChallenge.id}/${widget.challenge.id}').getDownloadURL();
-    //  imageUrl = imageUri.toString();
+      // FIREBASE_WEB Comment this out when running web version
+      Uri imageUri = await fb.storage().ref('proofs/${widget.userForChallenge.id}/${widget.challenge.id}').getDownloadURL();
+      imageUrl = imageUri.toString();
     }
     else {
      imageUrl = await FirebaseStorage.instance.ref().child('proofs/${widget.userForChallenge.id}/${widget.challenge.id}').getDownloadURL();
