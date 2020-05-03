@@ -48,23 +48,43 @@ class _RanksPageState extends State<RanksPage> with SingleTickerProviderStateMix
     return Scaffold(
       appBar: AppBar(
         title: Text("Classement"),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: <Widget>[
-            _buildItem(RankTabItem.players),
-            _buildItem(RankTabItem.teams)
-          ],
-        ),
       ),
-      body: Container(
-        child: TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            RankPlayersColumn(),
-            RankTeamsColumn(),
-          ],
-        )
-      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              border: Border(
+                bottom: BorderSide( //                    <--- top side
+                  color: Colors.black26,
+                  width: 1,
+                ),
+              ),
+            ),
+            child: TabBar(
+              labelColor: Theme.of(context).accentColor,
+              indicatorColor: Theme.of(context).accentColor,
+              controller: _tabController,
+              tabs: <Widget>[
+                _buildItem(RankTabItem.players),
+                _buildItem(RankTabItem.teams)
+              ],
+            ),
+          ),
+
+          Expanded(
+            child: Container(
+              child: TabBarView(
+                controller: _tabController,
+                children: <Widget>[
+                  RankPlayersColumn(),
+                  RankTeamsColumn(),
+                ],
+              )
+            ),
+          )
+        ],
+      )
     );
   }
 

@@ -53,28 +53,47 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         return Scaffold(
           appBar: AppBar(
             title: Text("Accueil"),
-            bottom: TabBar(
-              controller: _tabController,
-              tabs: <Widget>[
-                _buildItem(HomeTabItem.defis),
-                _buildItem(HomeTabItem.teamDefis)
-              ],
-            ),
           ),
-          body: Container(
-            child: TabBarView(
-              controller: _tabController,
-              children: <Widget>[
-                (applicationSettings.loggedUser.role == "captain" || applicationSettings.loggedUser.role == "admin") 
-                ? ChallengesCaptainColumn()
-                : ChallengesPlayerColumn(),
+          body: Column(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  border: Border(
+                    bottom: BorderSide( //                    <--- top side
+                      color: Colors.black26,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                child: TabBar(
+                  labelColor: Theme.of(context).accentColor,
+                  indicatorColor: Theme.of(context).accentColor,
+                  controller: _tabController,
+                  tabs: <Widget>[
+                    _buildItem(HomeTabItem.defis),
+                    _buildItem(HomeTabItem.teamDefis)
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      (applicationSettings.loggedUser.role == "captain" || applicationSettings.loggedUser.role == "admin") 
+                      ? ChallengesCaptainColumn()
+                      : ChallengesPlayerColumn(),
 
-                (applicationSettings.loggedUser.role == "admin")
-                ? TeamChallengesAdminColumn()
-                : TeamChallengesPlayerColumn(),
-              ],
-            )
-          ),
+                      (applicationSettings.loggedUser.role == "admin")
+                      ? TeamChallengesAdminColumn()
+                      : TeamChallengesPlayerColumn(),
+                    ],
+                  )
+                ),
+              )
+            ],
+          )
         );
       },
     );

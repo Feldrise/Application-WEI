@@ -97,10 +97,10 @@ class _ManageChallengesPageState extends State<ManageChallengesPage> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.blueGrey[100],
+                    color: Colors.black12,
                     border: Border(
                       left: BorderSide(
-                        color: Colors.blueGrey,
+                        color: Colors.black26,
                         width: 1,
                       ),
                     ),

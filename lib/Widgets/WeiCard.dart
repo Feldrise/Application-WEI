@@ -31,8 +31,8 @@ class WeiCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
-            blurRadius: 30.0, // has the effect of softening the shadow
-            spreadRadius: 10.0, // has the effect of extending the shadow
+            blurRadius: 50.0, // has the effect of softening the shadow
+            spreadRadius: 5.0, // has the effect of extending the shadow
             offset: Offset(
               0.0, // horizontal
               0.0, // vertical

@@ -20,9 +20,17 @@ class SidebarMenu extends StatelessWidget {
     User loggedUser = Provider.of<ApplicationSettings>(context).loggedUser;
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      padding: EdgeInsets.symmetric(vertical: 16),
       width: 300,
-      color: Theme.of(context).accentColor,
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border(
+          right: BorderSide( //                    <--- top side
+            color: Colors.black26,
+            width: 1,
+          ),
+        ),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,7 +42,7 @@ class SidebarMenu extends StatelessWidget {
           Text(
             "${loggedUser.firstName} ${loggedUser.secondName}", 
             textAlign: TextAlign.center, 
-            style: Theme.of(context).textTheme.subtitle2.merge(TextStyle(color: Colors.white)),
+            style: Theme.of(context).textTheme.subtitle2,
           ),
           SizedBox(height: 4,),
           // The team
@@ -44,10 +52,10 @@ class SidebarMenu extends StatelessWidget {
             builder: (context, teamSnapshot) {
               if (!teamSnapshot.hasData) return LinearProgressIndicator();
               
-              return Text("Equipe " + teamSnapshot.data["name"], style: TextStyle(color: Colors.white),);
+              return Text("Equipe " + teamSnapshot.data["name"],);
             },
           )
-          : Text("Vous n'avez pas encore d'équipe", style: TextStyle(color: Colors.white)),
+          : Text("Vous n'avez pas encore d'équipe",),
           SizedBox(height: 32,),
 
           // The menu
@@ -65,22 +73,24 @@ class SidebarMenu extends StatelessWidget {
     String text = tabName[tabItem];
     IconData icon = tabIcon[tabItem];
 
-    Color color = tabIndex[currentTab] == tabIndex[tabItem] ? Colors.white : Colors.white70;
-    
+    Color backgroundColor = tabIndex[currentTab] == tabIndex[tabItem] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor;
+    Color textColor = tabIndex[currentTab] == tabIndex[tabItem] ? Colors.white : Colors.black87;
+
     return GestureDetector(
       onTap: () => onSelectTab(tabItem),
 
       child: Container( 
         padding: EdgeInsets.symmetric(vertical: 8),
+        color: backgroundColor,
         child: Row(
           children: <Widget>[
             Expanded(
               flex: 3,
-              child: Icon(icon, color: color,),
+              child: Icon(icon, color: textColor,),
             ),
             Expanded(
               flex: 7,
-              child: Text(text, style: TextStyle(color: color),),
+              child: Text(text, style: TextStyle(color: textColor),),
             )
           ],
         ),

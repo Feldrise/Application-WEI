@@ -32,7 +32,13 @@ class BottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border(
+          top: BorderSide( //                    <--- top side
+            color: Colors.black26,
+            width: 1,
+          ),
+        ),
       ),
       margin: EdgeInsets.all(0),
       height: 64,
@@ -49,9 +55,9 @@ class BottomNavigation extends StatelessWidget {
           onTap: (index) => onSelectTab(
             TabItem.values[index],
           ),
-          backgroundColor: Theme.of(context).accentColor,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white70,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          selectedItemColor: Theme.of(context).accentColor,
+          unselectedItemColor: Colors.black87,
           iconSize: 24,
           elevation: 0,
         ),

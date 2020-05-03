@@ -10,8 +10,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:universal_html/prefer_universal/html.dart' as html;
-import 'package:firebase/firebase.dart' as fb;
+// import 'package:universal_html/prefer_universal/html.dart' as html;
+// import 'package:firebase/firebase.dart' as fb;
 
 /// This is a form to update a team
 class EditTeam extends StatefulWidget {
@@ -284,24 +284,24 @@ class _EditTeamState extends State<EditTeam> {
 
   /// This is the same function as _updateTeamPicture but for the web app
   Future _updateTeamPictureHtml() async {
-    // FIREBASE_WEB Comment this out when running web version
-    final html.InputElement input = html.document.createElement('input');
+    // // FIREBASE_WEB Comment this out when running web version
+    // final html.InputElement input = html.document.createElement('input');
 
-    input..type = 'file'..accept = 'image/*';
+    // input..type = 'file'..accept = 'image/*';
 
-    input.onChange.listen((e) async {
-      if (input.files == null || input.files[0] == null)
-        return;
+    // input.onChange.listen((e) async {
+    //   if (input.files == null || input.files[0] == null)
+    //     return;
 
-      final List<html.File> files = input.files;
+    //   final List<html.File> files = input.files;
 
-      fb.StorageReference storageRef = fb.storage().ref('avatars/teams/${widget.team.id}');
-      await storageRef.put(files[0]).future;
+    //   fb.StorageReference storageRef = fb.storage().ref('avatars/teams/${widget.team.id}');
+    //   await storageRef.put(files[0]).future;
 
-      setState(() {});  
-    });
+    //   setState(() {});  
+    // });
 
-    input.click();
+    // input.click();
     
   }
 }
